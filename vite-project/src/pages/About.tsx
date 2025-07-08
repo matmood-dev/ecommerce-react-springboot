@@ -2,134 +2,105 @@ import styled from 'styled-components';
 import Layout from '../layout/Main';
 import usePageTitle from '../hooks/usePageTitle';
 
-export default function AboutPage() {
-  usePageTitle('About - Max Bikers');
+type Props = {
+  toggleTheme: () => void;
+  isDark: boolean;
+};
+
+export default function AboutPage({ toggleTheme, isDark }: Props) {
+  usePageTitle('About Us');
 
   return (
-    <Layout>
-      <HeroSection>
-        <HeroText>
-          <h1>About Max Bikers</h1>
-          <p>Your Ride, Our Passion – Premium Motorcycle Gear & Accessories</p>
-        </HeroText>
-        <HeroImage src="/images/about-hero.jpg" alt="Max Bikers Hero" />
-      </HeroSection>
-
-      <Content>
-        <Section>
-          <h2>Who We Are</h2>
-          <p>
-            At <strong>Max Bikers</strong>, we live and breathe motorcycles. We're based in Bahrain and offer a curated selection of high-quality helmets, jackets, gloves, boots, and accessories. Whether you're a daily commuter or a weekend adventurer, we’ve got what you need.
-          </p>
-        </Section>
-
-        <Section>
-          <h2>Why Choose Us?</h2>
-          <ul>
-            <li>✅ Premium, certified gear</li>
-            <li>✅ Trusted brands only</li>
-            <li>✅ Fast delivery across GCC</li>
-            <li>✅ Dedicated customer support</li>
-          </ul>
-        </Section>
-
+    <Layout toggleTheme={toggleTheme} isDark={isDark}>
+      <Container>
+        <Heading>About Max Bikers</Heading>
+        <Subheading>Your Trusted Source for Motorcycle Gear & Accessories</Subheading>
+        <Paragraph>
+          At <strong>Max Bikers</strong>, we are passionate about the open road. Whether you're a seasoned rider or just starting out, we offer top-quality motorcycle gear, helmets, jackets, gloves, boots, and accessories to ensure your ride is safe, stylish, and unforgettable.
+        </Paragraph>
+        <Paragraph>
+          Based in Bahrain, we’re committed to delivering exceptional service and premium products that reflect the spirit of adventure and freedom. Our goal is to empower riders across the region with gear that inspires confidence and performance.
+        </Paragraph>
         <QuoteBox>
-          <q>Riding is not just a hobby — it’s a lifestyle. At Max Bikers, we help you live it to the fullest.</q>
+          “Ride with confidence. Ride with Max Bikers.”
         </QuoteBox>
-
-        <Section>
-          <h2>Join the Max Bikers Community</h2>
-          <p>
-            We’re more than a store — we’re a community of riders. Follow us on social media, join events, and ride together with fellow enthusiasts.
-          </p>
-        </Section>
-      </Content>
+        <Stats>
+          <Stat>
+            <Number>10+</Number>
+            <Label>Years in Business</Label>
+          </Stat>
+          <Stat>
+            <Number>5K+</Number>
+            <Label>Happy Riders</Label>
+          </Stat>
+          <Stat>
+            <Number>200+</Number>
+            <Label>Premium Products</Label>
+          </Stat>
+        </Stats>
+      </Container>
     </Layout>
   );
 }
 
 // Styled Components
-const HeroSection = styled.section`
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  gap: 2rem;
-  padding: 4rem 1.5rem;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: #fff;
-  text-align: center;
-
-  @media(min-width: 768px) {
-    flex-direction: row;
-    text-align: left;
-    justify-content: space-between;
-  }
-`;
-
-const HeroText = styled.div`
-  flex: 1;
-  h1 {
-    font-size: 2.8rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    font-size: 1.2rem;
-    font-weight: 400;
-    max-width: 500px;
-  }
-`;
-
-const HeroImage = styled.img`
-  flex: 1;
-  width: 100%;
-  max-width: 500px;
-  border-radius: 1rem;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-`;
-
-const Content = styled.main`
+const Container = styled.div`
   max-width: 960px;
   margin: 0 auto;
   padding: 3rem 1.5rem;
+  color: ${({ theme }) => theme.text};
 `;
 
-const Section = styled.section`
-  margin-bottom: 3rem;
+const Heading = styled.h1`
+  font-size: 2.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: ${({ theme }) => theme.primary};
+`;
 
-  h2 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #111827;
-  }
+const Subheading = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+`;
 
-  p {
-    font-size: 1rem;
-    line-height: 1.75;
-    color: #374151;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-    li {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-      color: #10b981;
-    }
-  }
+const Paragraph = styled.p`
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
 `;
 
 const QuoteBox = styled.blockquote`
-  margin: 2rem 0;
-  padding: 2rem;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-style: italic;
-  background-color: #f3f4f6;
-  border-left: 5px solid #3b82f6;
-  border-radius: 0.5rem;
-  color: #1f2937;
+  padding: 1rem 1.5rem;
+  background: ${({ theme }) => theme.bgAccent};
+  border-left: 4px solid ${({ theme }) => theme.primary};
+  margin: 2rem 0;
+`;
+
+const Stats = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+`;
+
+const Stat = styled.div`
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+`;
+
+const Number = styled.div`
+  font-size: 2rem;
+  font-weight: 700;
+  color: ${({ theme }) => theme.primary};
+`;
+
+const Label = styled.div`
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.text};
 `;
 

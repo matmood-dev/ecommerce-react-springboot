@@ -4,6 +4,7 @@ import HeroSection from '../components/homepage/HeroSection';
 import FeaturesSection from '../components/homepage/FeaturesSection';
 import CategoriesSection from '../components/homepage/CategoriesSection';
 import NewArrivalsSection from '../components/homepage/NewArrivalsSection';
+import PromoBannerSection from '../components/homepage/PromoBannerSection';
 
 type Props = {
   toggleTheme: () => void;
@@ -19,6 +20,7 @@ export default function Homepage({ toggleTheme, isDark }: Props) {
       <FeaturesSection />
       <CategoriesSection />
       <NewArrivalsSection />
+      <PromoBannerSection />
     </Layout>
   );
 }

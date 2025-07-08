@@ -2,6 +2,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Menu, X, Sun, Moon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   toggleTheme: () => void;
@@ -9,23 +10,32 @@ type Props = {
 };
 
 export default function Navbar({ toggleTheme, isDark }: Props) {
-  console.log("Navbar isDark:", isDark);
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = React.useState(false);
-  const navLinks = ["Home", "Shop", "About", "Contact"];
+
+  const navLinks = [
+    { key: "home", path: "/" },
+    { key: "shop", path: "/shop" },
+    { key: "about", path: "/about" },
+    { key: "contact", path: "/contact" },
+  ];
+
+  const changeLang = (lng: "en" | "ar") => {
+    i18n.changeLanguage(lng);
+    document.documentElement.dir = lng === "ar" ? "rtl" : "ltr"; // RTL toggle
+  };
+
   return (
     <Header>
       <NavContainer>
         <Logo>Max Bikers</Logo>
 
         <DesktopMenu>
-          {navLinks.map((link) => {
-            const path = link === "Home" ? "/" : `/${link.toLowerCase()}`;
-            return (
-              <NavItem key={link} href={path}>
-                {link}
-              </NavItem>
-            );
-          })}
+          {navLinks.map(({ key, path }) => (
+            <NavItem key={key} href={path}>
+              {t(key)}
+            </NavItem>
+          ))}
         </DesktopMenu>
 
         <Actions>
@@ -36,14 +46,19 @@ export default function Navbar({ toggleTheme, isDark }: Props) {
           <MobileToggle onClick={() => setOpen(!open)}>
             {open ? <X size={24} /> : <Menu size={24} />}
           </MobileToggle>
+          <LangToggle
+            onClick={() => changeLang(i18n.language === "ar" ? "en" : "ar")}
+          >
+            {i18n.language === "ar" ? "EN" : "ع"}
+          </LangToggle>
         </Actions>
       </NavContainer>
 
       {open && (
         <MobileMenu>
-          {navLinks.map((link) => (
-            <NavItem key={link} href={`/${link.toLowerCase()}`}>
-              {link}
+          {navLinks.map(({ key, path }) => (
+            <NavItem key={key} href={path}>
+              {t(key)}
             </NavItem>
           ))}
         </MobileMenu>
@@ -157,5 +172,20 @@ const MobileMenu = styled.div`
 
   @media (min-width: 768px) {
     display: none;
+  }
+`;
+
+const LangToggle = styled.button`
+  font-size: 0.9rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  background: transparent;
+  color: ${({ theme }) => theme.primary};
+  border: 1px solid ${({ theme }) => theme.primary};
+  transition: 0.3s;
+
+  &:hover {
+    background: ${({ theme }) => theme.primary};
+    color: #fff;
   }
 `;

@@ -7,7 +7,7 @@ const newProducts = [
     id: 1,
     name: "Racing Helmet",
     price: "49.99 BHD",
-    image: "/images/products/helmet1.jpg",
+    image: "/images/products/helmet1.webp",
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const newProducts = [
     id: 3,
     name: "Rider Gloves",
     price: "25.00 BHD",
-    image: "/images/products/gloves1.jpg",
+    image: "/images/products/gloves1.webp",
   },
 ];
 

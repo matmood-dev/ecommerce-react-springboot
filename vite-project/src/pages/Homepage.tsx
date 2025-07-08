@@ -1,14 +1,12 @@
-import Hero from '../components/homepage/Hero';
-import Features from '../components/homepage/Features';
-import ProductGrid from '../components/homepage/ProductGrid';
 import Layout from '../layout/Main';
+import Hero from '../components/homepage/Hero';
+import usePageTitle from '../hooks/usePageTitle';
 
 export default function Homepage() {
+  usePageTitle('Homepage');
   return (
     <Layout>
       <Hero />
-      <Features />
-      <ProductGrid />
     </Layout>
   );
 }

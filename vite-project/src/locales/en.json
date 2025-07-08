@@ -2,5 +2,10 @@
   "home": "Home",
   "shop": "Shop",
   "about": "About",
-  "contact": "Contact"
+  "contact": "Contact",
+  
+  "footer": {
+    "company": "Max Bikers",
+    "rights": "All rights reserved."
+  }
 }

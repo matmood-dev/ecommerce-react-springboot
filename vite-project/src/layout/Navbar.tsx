@@ -1,5 +1,5 @@
 // src/layout/Navbar.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,12 @@ export default function Navbar({ toggleTheme, isDark }: Props) {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = React.useState(false);
 
+  // Set initial direction based on language
+  useEffect(() => {
+    const savedLanguage = i18n.language || 'en';
+    document.documentElement.dir = savedLanguage === "ar" ? "rtl" : "ltr";
+  }, [i18n.language]);
+
   const navLinks = [
     { key: "home", path: "/" },
     { key: "shop", path: "/shop" },
@@ -22,7 +28,7 @@ export default function Navbar({ toggleTheme, isDark }: Props) {
 
   const changeLang = (lng: "en" | "ar") => {
     i18n.changeLanguage(lng);
-    document.documentElement.dir = lng === "ar" ? "rtl" : "ltr"; // RTL toggle
+    document.documentElement.dir = lng === "ar" ? "rtl" : "ltr";
   };
 
   return (
@@ -39,27 +45,33 @@ export default function Navbar({ toggleTheme, isDark }: Props) {
         </DesktopMenu>
 
         <Actions>
-          <ThemeToggle onClick={toggleTheme}>
-            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          <ThemeToggle onClick={toggleTheme} aria-label="Toggle theme">
+            {isDark ? (
+              <Sun size={20} className="icon" />
+            ) : (
+              <Moon size={20} className="icon" />
+            )}
           </ThemeToggle>
 
-          <MobileToggle onClick={() => setOpen(!open)}>
-            {open ? <X size={24} /> : <Menu size={24} />}
-          </MobileToggle>
           <LangToggle
             onClick={() => changeLang(i18n.language === "ar" ? "en" : "ar")}
+            aria-label="Toggle language"
           >
             {i18n.language === "ar" ? "EN" : "ع"}
           </LangToggle>
+
+          <MobileToggle onClick={() => setOpen(!open)} aria-label="Menu">
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </MobileToggle>
         </Actions>
       </NavContainer>
 
       {open && (
         <MobileMenu>
           {navLinks.map(({ key, path }) => (
-            <NavItem key={key} href={path}>
+            <MobileNavItem key={key} href={path} onClick={() => setOpen(false)}>
               {t(key)}
-            </NavItem>
+            </MobileNavItem>
           ))}
         </MobileMenu>
       )}
@@ -67,26 +79,48 @@ export default function Navbar({ toggleTheme, isDark }: Props) {
   );
 }
 
+// Updated theme colors (add these to your theme.ts)
+/*
+export const lightTheme = {
+  background: '#f8f9fa',
+  text: '#2d3436',
+  primary: '#0984e3',
+  secondary: '#00cec9',
+  accent: '#fd79a8',
+  card: '#ffffff',
+  border: '#dfe6e9',
+};
+
+export const darkTheme = {
+  background: '#1e272e',
+  text: '#f5f6fa',
+  primary: '#00a8ff',
+  secondary: '#00d2d3',
+  accent: '#e84393',
+  card: '#2f3640',
+  border: '#353b48',
+};
+*/
+
 const Header = styled.header`
   position: sticky;
   top: 0;
   z-index: 50;
-  background: ${({ theme }) => theme.background};
-  color: ${({ theme }) => theme.text};
-  box-shadow: ${({ theme }) =>
-    theme.background === "#1a1a1a"
-      ? "0 4px 12px rgba(0, 0, 0, 0.6)" // Dark mode shadow
-      : "0 2px 8px rgba(0, 0, 0, 0.05)"}; // Light mode shadow
-  transition: box-shadow 0.3s ease, background 0.3s ease;
+  background: ${({ theme }) => theme.header.background};
+  color: ${({ theme }) => theme.header.text};
+  box-shadow: ${({ theme }) => theme.header.shadow};
+  transition: all 0.3s ease;
+  border-bottom: 1px solid ${({ theme }) => theme.header.border};
 `;
 
 const NavContainer = styled.div`
   max-width: 1280px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 `;
 
 const Logo = styled.div`
@@ -94,12 +128,29 @@ const Logo = styled.div`
   font-weight: 800;
   color: ${({ theme }) => theme.primary};
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 3px;
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(
+    to right,
+    ${({ theme }) => theme.primary},
+    ${({ theme }) => theme.secondary}
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    letter-spacing: 4px;
+  }
 `;
 
 const DesktopMenu = styled.nav`
   display: none;
-  gap: 2rem;
+  gap: 1.5rem;
+  margin: 0 auto;
 
   @media (min-width: 768px) {
     display: flex;
@@ -107,15 +158,33 @@ const DesktopMenu = styled.nav`
 `;
 
 const NavItem = styled.a`
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
   color: ${({ theme }) => theme.text};
-  padding: 0.5rem;
-  transition: all 0.25s ease;
+  padding: 0.5rem 0;
+  transition: all 0.3s ease;
+  position: relative;
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: ${({ theme }) => theme.primary};
+    transition: width 0.3s ease;
+  }
 
   &:hover {
     color: ${({ theme }) => theme.primary};
-    transform: translateY(-2px);
+    letter-spacing: 2px;
+
+    &::after {
+      width: 100%;
+    }
   }
 `;
 
@@ -125,39 +194,70 @@ const Actions = styled.div`
   gap: 1rem;
 
   @media (min-width: 768px) {
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 `;
 
 const ThemeToggle = styled.button`
-  background: ${({ theme }) => theme.primary};
-  color: #fff;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
+  background: transparent;
+  color: ${({ theme }) => theme.primary};
+  border: 2px solid ${({ theme }) => theme.primary};
+  padding: 0.5rem;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
 
   &:hover {
-    background: ${({ theme }) => theme.primaryHover || "#0073aa"};
+    background: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.background};
+    transform: scale(1.1) rotate(15deg);
   }
+`;
 
-  @media (max-width: 767px) {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.875rem;
+const LangToggle = styled.button`
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  background: transparent;
+  color: ${({ theme }) => theme.primary};
+  border: 2px solid ${({ theme }) => theme.primary};
+  transition: all 0.3s ease;
+  cursor: pointer;
+  letter-spacing: 1px;
+
+  &:hover {
+    background: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.background};
+    transform: scale(1.05);
+    letter-spacing: 2px;
   }
 `;
 
 const MobileToggle = styled.button`
-  background: none;
-  border: none;
-  color: inherit;
+  background: ${({ theme }) => theme.card || 'transparent'};
+  border: 2px solid ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.primary};
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
+  border-radius: 8px;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+
+  &:hover {
+    background: ${({ theme }) => theme.primary};
+    color: white;
+    transform: scale(1.05);
+  }
 
   @media (min-width: 768px) {
     display: none;
@@ -167,25 +267,39 @@ const MobileToggle = styled.button`
 const MobileMenu = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0 1.5rem 1rem;
-  gap: 0.75rem;
+  padding: 0 2rem 1.5rem;
+  gap: 1rem;
+  background: ${({ theme }) => theme.card || theme.background};
+  border-top: 1px solid ${({ theme }) => theme.border};
+  animation: fadeIn 0.3s ease;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   @media (min-width: 768px) {
     display: none;
   }
 `;
 
-const LangToggle = styled.button`
-  font-size: 0.9rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  background: transparent;
-  color: ${({ theme }) => theme.primary};
-  border: 1px solid ${({ theme }) => theme.primary};
-  transition: 0.3s;
+const MobileNavItem = styled.a`
+  font-weight: 600;
+  text-decoration: none;
+  color: ${({ theme }) => theme.text};
+  padding: 0.75rem 0;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid ${({ theme }) => theme.border};
+  font-size: 1.1rem;
 
   &:hover {
-    background: ${({ theme }) => theme.primary};
-    color: #fff;
+    color: ${({ theme }) => theme.primary};
+    padding-left: 0.5rem;
   }
 `;

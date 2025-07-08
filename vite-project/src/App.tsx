@@ -10,7 +10,6 @@ import { Shop } from './pages/Shop';
 import Contact from './pages/Contact';
 
 function App() {
-  // ✅ Initialize from localStorage or default to false (light)
   const [isDark, setIsDark] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
@@ -19,10 +18,14 @@ function App() {
     setIsDark(prev => {
       const next = !prev;
       localStorage.setItem('theme', next ? 'dark' : 'light'); 
-      console.log('Theme changed. isDark:', next);
       return next;
     });
   };
+
+  useEffect(() => {
+    const lang = localStorage.getItem('i18nextLng') || 'en';
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  }, []);
 
   return (
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>

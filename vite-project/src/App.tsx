@@ -6,6 +6,8 @@ import GlobalStyle from './styles/GlobalStyle';
 
 import Homepage from './pages/Homepage';
 import AboutPage from './pages/About';
+import { Shop } from './pages/Shop';
+import Contact from './pages/Contact';
 
 function App() {
   // ✅ Initialize from localStorage or default to false (light)
@@ -16,7 +18,7 @@ function App() {
   const toggleTheme = () => {
     setIsDark(prev => {
       const next = !prev;
-      localStorage.setItem('theme', next ? 'dark' : 'light'); // ✅ Save to localStorage
+      localStorage.setItem('theme', next ? 'dark' : 'light'); 
       console.log('Theme changed. isDark:', next);
       return next;
     });
@@ -29,6 +31,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Homepage toggleTheme={toggleTheme} isDark={isDark} />} />
           <Route path="/about" element={<AboutPage toggleTheme={toggleTheme} isDark={isDark} />} />
+          <Route path="/shop" element={<Shop toggleTheme={toggleTheme} isDark={isDark} />} />
+          <Route path="/contact" element={<Contact toggleTheme={toggleTheme} isDark={isDark} />} />
         </Routes>
       </Router>
     </ThemeProvider>

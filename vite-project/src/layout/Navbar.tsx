@@ -1,7 +1,7 @@
 // src/layout/Navbar.tsx
-import React from 'react';
-import styled from 'styled-components';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import React from "react";
+import styled from "styled-components";
+import { Menu, X, Sun, Moon } from "lucide-react";
 
 type Props = {
   toggleTheme: () => void;
@@ -11,18 +11,21 @@ type Props = {
 export default function Navbar({ toggleTheme, isDark }: Props) {
   console.log("Navbar isDark:", isDark);
   const [open, setOpen] = React.useState(false);
-  const navLinks = ['Home', 'Shop', 'About', 'Contact'];
+  const navLinks = ["Home", "Shop", "About", "Contact"];
   return (
     <Header>
       <NavContainer>
         <Logo>Max Bikers</Logo>
 
         <DesktopMenu>
-          {navLinks.map((link) => (
-            <NavItem key={link} href={`/${link.toLowerCase()}`}>
-              {link}
-            </NavItem>
-          ))}
+          {navLinks.map((link) => {
+            const path = link === "Home" ? "/" : `/${link.toLowerCase()}`;
+            return (
+              <NavItem key={link} href={path}>
+                {link}
+              </NavItem>
+            );
+          })}
         </DesktopMenu>
 
         <Actions>
@@ -56,12 +59,11 @@ const Header = styled.header`
   background: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
   box-shadow: ${({ theme }) =>
-    theme.background === '#1a1a1a'
-      ? '0 4px 12px rgba(0, 0, 0, 0.6)' // Dark mode shadow
-      : '0 2px 8px rgba(0, 0, 0, 0.05)'}; // Light mode shadow
+    theme.background === "#1a1a1a"
+      ? "0 4px 12px rgba(0, 0, 0, 0.6)" // Dark mode shadow
+      : "0 2px 8px rgba(0, 0, 0, 0.05)"}; // Light mode shadow
   transition: box-shadow 0.3s ease, background 0.3s ease;
 `;
-
 
 const NavContainer = styled.div`
   max-width: 1280px;
@@ -125,7 +127,7 @@ const ThemeToggle = styled.button`
   transition: background 0.3s;
 
   &:hover {
-    background: ${({ theme }) => theme.primaryHover || '#0073aa'};
+    background: ${({ theme }) => theme.primaryHover || "#0073aa"};
   }
 
   @media (max-width: 767px) {

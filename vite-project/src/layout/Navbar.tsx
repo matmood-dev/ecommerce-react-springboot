@@ -34,7 +34,7 @@ export default function Navbar({ toggleTheme, isDark }: Props) {
   return (
     <Header>
       <NavContainer>
-        <Logo>Max Bikers</Logo>
+        <Logo>{t("logo")}</Logo>
 
         <DesktopMenu>
           {navLinks.map(({ key, path }) => (

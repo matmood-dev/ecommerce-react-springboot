@@ -1,6 +1,9 @@
 import Layout from '../layout/Main';
-import Hero from '../components/homepage/Hero';
 import usePageTitle from '../hooks/usePageTitle';
+import HeroSection from '../components/homepage/HeroSection';
+import FeaturesSection from '../components/homepage/FeaturesSection';
+import CategoriesSection from '../components/homepage/CategoriesSection';
+import NewArrivalsSection from '../components/homepage/NewArrivalsSection';
 
 type Props = {
   toggleTheme: () => void;
@@ -12,7 +15,10 @@ export default function Homepage({ toggleTheme, isDark }: Props) {
 
   return (
     <Layout toggleTheme={toggleTheme} isDark={isDark}>
-      <Hero />
+      <HeroSection />
+      <FeaturesSection />
+      <CategoriesSection />
+      <NewArrivalsSection />
     </Layout>
   );
 }

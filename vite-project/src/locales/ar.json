@@ -3,9 +3,40 @@
   "shop": "المتجر",
   "about": "من نحن",
   "contact": "اتصل بنا",
+  "logo": "ماكس بايكرز",
 
   "footer": {
     "company": "ماكس بايكرز",
     "rights": "جميع الحقوق محفوظة."
+  },
+
+  "hero": {
+    "title": "أفضل ملحقات الدراجات النارية",
+    "subtitle": "تسوق أحدث المعدات والأكسسوارات بكل سهولة.",
+    "shopNow": "ابدأ التسوق",
+    "learnMore": "اعرف المزيد"
+  },
+
+  "features": {
+    "secure": "مدفوعات آمنة",
+    "secureDesc": "جميع معاملاتك مشفرة وآمنة.",
+    "fastDelivery": "توصيل سريع",
+    "fastDeliveryDesc": "احصل على طلبك في وقت قياسي.",
+    "easyReturns": "إرجاع سهل",
+    "easyReturnsDesc": "سياسة إرجاع مرنة وخالية من المتاعب.",
+    "bestPrice": "أفضل الأسعار",
+    "bestPriceDesc": "جودة عالية بأسعار لا تُنافس."
+  },
+
+  "categories": {
+    "title": "تسوق حسب الفئة",
+    "helmets": "خوذات",
+    "jackets": "جاكيتات",
+    "gloves": "قفازات",
+    "accessories": "اكسسوارات"
+  },
+
+  "newArrivals": {
+    "title": "الواصل حديثًا"
   }
 }

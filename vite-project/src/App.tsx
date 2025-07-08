@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+    <ThemeProvider theme={{ ...(isDark ? darkTheme : lightTheme), mode: isDark ? 'dark' : 'light' }}>
       <GlobalStyle />
       <Router>
         <Routes>

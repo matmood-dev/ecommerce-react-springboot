@@ -3,9 +3,40 @@
   "shop": "Shop",
   "about": "About",
   "contact": "Contact",
-  
+  "logo": "Max Bikers",
+
   "footer": {
     "company": "Max Bikers",
     "rights": "All rights reserved."
+  },
+
+  "hero": {
+    "title": "Best Motorcycle Accessories",
+    "subtitle": "Shop the latest gear and accessories with ease.",
+    "shopNow": "Shop Now",
+    "learnMore": "Learn More"
+  },
+
+  "features": {
+    "secure": "Secure Payments",
+    "secureDesc": "Your transactions are encrypted & safe.",
+    "fastDelivery": "Fast Delivery",
+    "fastDeliveryDesc": "Get your order in record time.",
+    "easyReturns": "Easy Returns",
+    "easyReturnsDesc": "Hassle-free return policy.",
+    "bestPrice": "Best Prices",
+    "bestPriceDesc": "High quality at unbeatable rates."
+  },
+
+  "categories": {
+    "title": "Shop by Category",
+    "helmets": "Helmets",
+    "jackets": "Jackets",
+    "gloves": "Gloves",
+    "accessories": "Accessories"
+  },
+
+  "newArrivals": {
+    "title": "New Arrivals"
   }
 }

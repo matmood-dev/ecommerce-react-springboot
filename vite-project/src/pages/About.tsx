@@ -74,7 +74,7 @@ const QuoteBox = styled.blockquote`
   font-size: 1.25rem;
   font-style: italic;
   padding: 1rem 1.5rem;
-  background: ${({ theme }) => theme.bgAccent};
+  background: ${({ theme }) => theme.accent};
   border-left: 4px solid ${({ theme }) => theme.primary};
   margin: 2rem 0;
 `;

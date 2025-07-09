@@ -138,7 +138,6 @@ const Logo = styled.div`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent;
   transition: all 0.3s ease;
 
   &:hover {

@@ -44,5 +44,17 @@
     "title": "Gear Up for Your Next Ride!",
     "subtitle": "Discover premium motorcycle accessories and apparel.",
     "cta": "Shop Now"
-  }
+  },
+
+  "about-page": {
+  "title": "About Max Bikers",
+  "mission": "Max Bikers was founded with a passion for riding and a commitment to provide top-quality motorcycle gear and accessories.",
+  "vision": "We believe every rider deserves safety, style, and comfort on the road. Our curated collection ensures just that.",
+  "whyChooseUs": "Why Choose Max Bikers?",
+  "point1": "Premium quality products handpicked for riders.",
+  "point2": "Fast delivery & easy returns for a hassle-free experience.",
+  "point3": "Dedicated to rider safety and satisfaction.",
+  "readyToExplore": "Ready to gear up?",
+  "shopNow": "Explore Our Shop"
+}
 }

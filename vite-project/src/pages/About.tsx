@@ -1,6 +1,7 @@
-import styled from 'styled-components';
-import Layout from '../layout/Main';
-import usePageTitle from '../hooks/usePageTitle';
+import styled from "styled-components";
+import Layout from "../layout/Main";
+import usePageTitle from "../hooks/usePageTitle";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   toggleTheme: () => void;
@@ -8,99 +9,108 @@ type Props = {
 };
 
 export default function AboutPage({ toggleTheme, isDark }: Props) {
-  usePageTitle('About Us');
+  const { t } = useTranslation();
+  usePageTitle("About Us");
 
   return (
     <Layout toggleTheme={toggleTheme} isDark={isDark}>
-      <Container>
-        <Heading>About Max Bikers</Heading>
-        <Subheading>Your Trusted Source for Motorcycle Gear & Accessories</Subheading>
-        <Paragraph>
-          At <strong>Max Bikers</strong>, we are passionate about the open road. Whether you're a seasoned rider or just starting out, we offer top-quality motorcycle gear, helmets, jackets, gloves, boots, and accessories to ensure your ride is safe, stylish, and unforgettable.
-        </Paragraph>
-        <Paragraph>
-          Based in Bahrain, we’re committed to delivering exceptional service and premium products that reflect the spirit of adventure and freedom. Our goal is to empower riders across the region with gear that inspires confidence and performance.
-        </Paragraph>
-        <QuoteBox>
-          “Ride with confidence. Ride with Max Bikers.”
-        </QuoteBox>
-        <Stats>
-          <Stat>
-            <Number>10+</Number>
-            <Label>Years in Business</Label>
-          </Stat>
-          <Stat>
-            <Number>5K+</Number>
-            <Label>Happy Riders</Label>
-          </Stat>
-          <Stat>
-            <Number>200+</Number>
-            <Label>Premium Products</Label>
-          </Stat>
-        </Stats>
-      </Container>
+      <Wrapper>
+        <Title>{t("about-page.title")}</Title>
+        <Section>
+          <Paragraph>{t("about-page.mission")}</Paragraph>
+          <Paragraph>{t("about-page.vision")}</Paragraph>
+          <Image src="/images/about/team.webp" alt="Our Team" />
+        </Section>
+
+        <Section>
+          <Subtitle>{t("about-page.whyChooseUs")}</Subtitle>
+          <List>
+            <li>{t("about-page.point1")}</li>
+            <li>{t("about-page.point2")}</li>
+            <li>{t("about-page.point3")}</li>
+          </List>
+        </Section>
+
+        <CallToAction>
+          <h3>{t("about-page.readyToExplore")}</h3>
+          <CTAButton onClick={() => window.location.href = "/shop"}>
+            {t("about-page.shopNow")}
+          </CTAButton>
+        </CallToAction>
+      </Wrapper>
     </Layout>
   );
 }
 
-// Styled Components
-const Container = styled.div`
-  max-width: 960px;
+const Wrapper = styled.section`
+  padding: 4rem 2rem;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
   color: ${({ theme }) => theme.text};
 `;
 
-const Heading = styled.h1`
-  font-size: 2.75rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: ${({ theme }) => theme.primary};
+const Title = styled.h1`
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
 `;
 
-const Subheading = styled.h2`
+const Section = styled.div`
+  margin-bottom: 3rem;
+`;
+
+const Subtitle = styled.h2`
   font-size: 1.5rem;
-  font-weight: 500;
-  margin-bottom: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
 `;
 
 const Paragraph = styled.p`
   font-size: 1.1rem;
   line-height: 1.8;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.2rem;
 `;
 
-const QuoteBox = styled.blockquote`
-  font-size: 1.25rem;
-  font-style: italic;
-  padding: 1rem 1.5rem;
-  background: ${({ theme }) => theme.accent};
-  border-left: 4px solid ${({ theme }) => theme.primary};
-  margin: 2rem 0;
+const List = styled.ul`
+  padding-left: 1.5rem;
+  font-size: 1.05rem;
+
+  li {
+    margin-bottom: 0.75rem;
+  }
 `;
 
-const Stats = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+const Image = styled.img`
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 1rem;
 `;
 
-const Stat = styled.div`
-  flex: 1;
-  min-width: 120px;
+const CallToAction = styled.div`
   text-align: center;
+  margin-top: 3rem;
 `;
 
-const Number = styled.div`
-  font-size: 2rem;
-  font-weight: 700;
-  color: ${({ theme }) => theme.primary};
-`;
+const CTAButton = styled.button`
+  margin-top: 1rem;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
 
-const Label = styled.div`
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.text};
-`;
+  background: ${({ theme }) =>
+    theme.mode === "dark" ? theme.text : theme.primary};
+  color: ${({ theme }) =>
+    theme.mode === "dark" ? theme.background : "#fff"};
 
+  &:hover {
+    background: ${({ theme }) =>
+      theme.mode === "dark" ? theme.card : theme.secondary};
+    color: ${({ theme }) =>
+      theme.mode === "dark" ? theme.text : "#fff"};
+  }
+`;

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import styled from "styled-components";
+
 import AdminSidebar from "./AdminSidebar";
 import AdminTopbar from "./AdminTopbar";
+import AdminFooter from "./AdminFooter";
 
 type Props = {
   toggleTheme: () => void;
@@ -35,19 +37,11 @@ export default function AdminLayout({ toggleTheme, isDark }: Props) {
         <Content>
           <Outlet />
         </Content>
+        <AdminFooter />
       </Main>
     </Container>
   );
 }
-
-const Container = styled.div`
-  display: flex;
-  min-height: 100vh;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
 
 const Backdrop = styled.div`
   position: fixed;
@@ -57,6 +51,15 @@ const Backdrop = styled.div`
 
   @media (min-width: 769px) {
     display: none;
+  }
+`;
+
+const Container = styled.div`
+  display: flex;
+  min-height: 100vh;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
   }
 `;
 

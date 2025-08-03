@@ -7,17 +7,25 @@ export default function Settings() {
 
       <Section>
         <SectionTitle>Theme</SectionTitle>
-        <Text>This app supports Light and Dark Mode using the toggle in the top bar.</Text>
+        <Text>
+          This app supports Light and Dark Mode using the toggle in the top bar.
+        </Text>
       </Section>
 
       <Section>
         <SectionTitle>Language</SectionTitle>
-        <Text>Language selection is based on localStorage and supports English and Arabic (RTL).</Text>
+        <Text>
+          Language selection is based on localStorage and supports English and
+          Arabic (RTL).
+        </Text>
       </Section>
 
       <Section>
         <SectionTitle>Account</SectionTitle>
-        <Text>In a real app, you'd configure profile settings, password change, and logout options here.</Text>
+        <Text>
+          In a real app, you'd configure profile settings, password change, and
+          logout options here.
+        </Text>
       </Section>
     </Wrapper>
   );
@@ -25,12 +33,20 @@ export default function Settings() {
 
 const Wrapper = styled.div`
   padding: 2rem;
+
+  @media (max-width: 600px) {
+    padding: 1rem;
+  }
 `;
 
 const Title = styled.h2`
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 2rem;
+
+  @media (max-width: 600px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const Section = styled.div`
@@ -39,6 +55,10 @@ const Section = styled.div`
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 8px;
   padding: 1.5rem;
+
+  @media (max-width: 600px) {
+    padding: 1rem;
+  }
 `;
 
 const SectionTitle = styled.h3`
@@ -46,10 +66,18 @@ const SectionTitle = styled.h3`
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: ${({ theme }) => theme.primary};
+
+  @media (max-width: 600px) {
+    font-size: 1.05rem;
+  }
 `;
 
 const Text = styled.p`
   font-size: 0.95rem;
   color: ${({ theme }) => theme.text};
   opacity: 0.9;
+
+  @media (max-width: 600px) {
+    font-size: 0.9rem;
+  }
 `;

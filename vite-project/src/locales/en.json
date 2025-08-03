@@ -4,19 +4,16 @@
   "about": "About",
   "contact": "Contact",
   "logo": "Max Bikers",
-
   "footer": {
     "company": "Max Bikers",
     "rights": "All rights reserved."
   },
-
   "hero": {
     "title": "Best Motorcycle Accessories",
     "subtitle": "Shop the latest gear and accessories with ease.",
     "shopNow": "Shop Now",
     "learnMore": "Learn More"
   },
-
   "features": {
     "secure": "Secure Payments",
     "secureDesc": "Your transactions are encrypted & safe.",
@@ -27,7 +24,6 @@
     "bestPrice": "Best Prices",
     "bestPriceDesc": "High quality at unbeatable rates."
   },
-
   "categories": {
     "title": "Shop by Category",
     "helmets": "Helmets",
@@ -35,42 +31,40 @@
     "gloves": "Gloves",
     "accessories": "Accessories"
   },
-
   "newArrivals": {
     "title": "New Arrivals"
   },
-
   "promo": {
     "title": "Gear Up for Your Next Ride!",
     "subtitle": "Discover premium motorcycle accessories and apparel.",
     "cta": "Shop Now"
   },
-
   "about-page": {
-  "title": "About Max Bikers",
-  "mission": "Max Bikers was founded with a passion for riding and a commitment to provide top-quality motorcycle gear and accessories.",
-  "vision": "We believe every rider deserves safety, style, and comfort on the road. Our curated collection ensures just that.",
-  "whyChooseUs": "Why Choose Max Bikers?",
-  "point1": "Premium quality products handpicked for riders.",
-  "point2": "Fast delivery & easy returns for a hassle-free experience.",
-  "point3": "Dedicated to rider safety and satisfaction.",
-  "readyToExplore": "Ready to gear up?",
-  "shopNow": "Explore Our Shop"
-},
-
-"contact-page": {
-  "title": "Contact Us",
-  "subtitle": "We’d love to hear from you. Fill out the form and we’ll get back to you shortly.",
-  "name": "Your Name",
-  "email": "Your Email",
-  "message": "Your Message",
-  "submit": "Send Message",
-  "success": "Thank you! Your message has been sent.",
-  "detailsTitle": "Our Contact Details",
-  "address": "Address",
-  "phone": "Phone",
-  "emailLabel": "Email",
-  "workingHours": "Working Hours"
-}
-
+    "title": "About Max Bikers",
+    "mission": "Max Bikers was founded with a passion for riding and a commitment to provide top-quality motorcycle gear and accessories.",
+    "vision": "We believe every rider deserves safety, style, and comfort on the road. Our curated collection ensures just that.",
+    "whyChooseUs": "Why Choose Max Bikers?",
+    "point1": "Premium quality products handpicked for riders.",
+    "point2": "Fast delivery & easy returns for a hassle-free experience.",
+    "point3": "Dedicated to rider safety and satisfaction.",
+    "readyToExplore": "Ready to gear up?",
+    "shopNow": "Explore Our Shop"
+  },
+  "contact-page": {
+    "title": "Contact Us",
+    "subtitle": "We’d love to hear from you. Fill out the form and we’ll get back to you shortly.",
+    "name": "Your Name",
+    "email": "Your Email",
+    "message": "Your Message",
+    "submit": "Send Message",
+    "success": "Thank you! Your message has been sent.",
+    "detailsTitle": "Our Contact Details",
+    "address": "Address",
+    "phone": "Phone",
+    "emailLabel": "Email",
+    "workingHours": "Working Hours"
+  },
+  "shop-page": {
+    "title": "Shop All Products"
+  }
 }

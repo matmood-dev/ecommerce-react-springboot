@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Racing Helmet",
+    "price": "49.99 BHD",
+    "image": "/images/products/helmet1.webp"
+  },
+  {
+    "id": 2,
+    "name": "Leather Jacket",
+    "price": "89.00 BHD",
+    "image": "/images/products/jacket1.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Rider Gloves",
+    "price": "25.00 BHD",
+    "image": "/images/products/gloves1.webp"
+  },
+  {
+    "id": 4,
+    "name": "Bike Boots",
+    "price": "59.99 BHD",
+    "image": "/images/products/boots1.webp"
+  },
+  {
+    "id": 5,
+    "name": "Bike Boots 2",
+    "price": "79.99 BHD",
+    "image": "/images/products/boots1.webp"
+  }
+]

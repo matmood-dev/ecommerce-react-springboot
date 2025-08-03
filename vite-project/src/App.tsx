@@ -6,7 +6,7 @@ import GlobalStyle from './styles/GlobalStyle';
 
 import Homepage from './pages/Homepage';
 import AboutPage from './pages/About';
-import { Shop } from './pages/Shop';
+import Shop from './pages/Shop';
 import Contact from './pages/Contact';
 
 function App() {

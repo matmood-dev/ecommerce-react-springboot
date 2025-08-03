@@ -4,12 +4,6 @@ import { useEffect, useState } from "react";
 import { lightTheme, darkTheme } from "./styles/Theme";
 import GlobalStyle from "./styles/GlobalStyle";
 
-// Store Pages
-// import Homepage from './pages/Homepage';
-// import AboutPage from './pages/About';
-// import Shop from './pages/Shop';
-// import Contact from './pages/Contact';
-
 // Admin Pages
 import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./pages/Dashboard";
@@ -46,13 +40,6 @@ function App() {
       <GlobalStyle />
       <Router>
         <Routes>
-          {/* Store Pages */}
-          {/* <Route path="/" element={<Homepage toggleTheme={toggleTheme} isDark={isDark} />} />
-          <Route path="/about" element={<AboutPage toggleTheme={toggleTheme} isDark={isDark} />} />
-          <Route path="/shop" element={<Shop toggleTheme={toggleTheme} isDark={isDark} />} />
-          <Route path="/contact" element={<Contact toggleTheme={toggleTheme} isDark={isDark} />} /> */}
-
-          {/* Admin Panel */}
           <Route
             path="/"
             element={<AdminLayout toggleTheme={toggleTheme} isDark={isDark} />}

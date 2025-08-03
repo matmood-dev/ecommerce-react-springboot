@@ -10,5 +10,6 @@ declare module 'styled-components' {
     accent: string;
     card: string;
     border: string;
+    shadow: string;
   }
 }

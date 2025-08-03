@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import styled from "styled-components";
-
-import AdminTopbar from "./AdminTopbar";
 import AdminSidebar from "./AdminSidebar";
+import AdminTopbar from "./AdminTopbar";
 
 type Props = {
   toggleTheme: () => void;
@@ -14,10 +13,14 @@ export default function AdminLayout({ toggleTheme, isDark }: Props) {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Auto-close mobile sidebar on route change
   useEffect(() => {
     setMenuOpen(false);
+    document.body.style.overflow = "";
   }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+  }, [menuOpen]);
 
   return (
     <Container>
@@ -61,6 +64,11 @@ const Main = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-left: 240px;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
 `;
 
 const Content = styled.main`

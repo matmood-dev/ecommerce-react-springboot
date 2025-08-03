@@ -1,0 +1,43 @@
+[
+  {
+    "id": 101,
+    "customer": "Ahmed Ali",
+    "date": "2025-08-01",
+    "status": "Pending",
+    "total": 138.99,
+    "items": [
+      { "productId": 1, "name": "Racing Helmet", "quantity": 1, "price": 49.99 },
+      { "productId": 2, "name": "Leather Jacket", "quantity": 1, "price": 89.00 }
+    ]
+  },
+  {
+    "id": 102,
+    "customer": "Fatima Salman",
+    "date": "2025-08-02",
+    "status": "Shipped",
+    "total": 59.99,
+    "items": [
+      { "productId": 4, "name": "Bike Boots", "quantity": 1, "price": 59.99 }
+    ]
+  },
+  {
+    "id": 103,
+    "customer": "Mohammed Hasan",
+    "date": "2025-08-02",
+    "status": "Delivered",
+    "total": 25.00,
+    "items": [
+      { "productId": 3, "name": "Rider Gloves", "quantity": 1, "price": 25.00 }
+    ]
+  },
+  {
+    "id": 104,
+    "customer": "Zahra Yusuf",
+    "date": "2025-08-03",
+    "status": "Cancelled",
+    "total": 89.00,
+    "items": [
+      { "productId": 2, "name": "Leather Jacket", "quantity": 1, "price": 89.00 }
+    ]
+  }
+]

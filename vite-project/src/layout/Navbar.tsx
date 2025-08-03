@@ -79,29 +79,6 @@ export default function Navbar({ toggleTheme, isDark }: Props) {
   );
 }
 
-// Updated theme colors (add these to your theme.ts)
-/*
-export const lightTheme = {
-  background: '#f8f9fa',
-  text: '#2d3436',
-  primary: '#0984e3',
-  secondary: '#00cec9',
-  accent: '#fd79a8',
-  card: '#ffffff',
-  border: '#dfe6e9',
-};
-
-export const darkTheme = {
-  background: '#1e272e',
-  text: '#f5f6fa',
-  primary: '#00a8ff',
-  secondary: '#00d2d3',
-  accent: '#e84393',
-  card: '#2f3640',
-  border: '#353b48',
-};
-*/
-
 const Header = styled.header`
   position: sticky;
   top: 0;

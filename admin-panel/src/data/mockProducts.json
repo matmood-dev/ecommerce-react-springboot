@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Racing Helmet",
+    "description": "Durable helmet for track racing",
+    "price": 49.99,
+    "stock": 15,
+    "category": "Helmets",
+    "image": "/images/products/helmet1.webp",
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "name": "Leather Jacket",
+    "description": "Premium black leather biker jacket",
+    "price": 89.00,
+    "stock": 8,
+    "category": "Jackets",
+    "image": "/images/products/jacket1.jpg",
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "name": "Rider Gloves",
+    "description": "Comfortable padded gloves for riders",
+    "price": 25.00,
+    "stock": 20,
+    "category": "Gloves",
+    "image": "/images/products/gloves1.webp",
+    "status": "inactive"
+  },
+  {
+    "id": 4,
+    "name": "Bike Boots",
+    "description": "Strong and stylish riding boots",
+    "price": 59.99,
+    "stock": 12,
+    "category": "Boots",
+    "image": "/images/products/boots1.webp",
+    "status": "active"
+  },
+  {
+    "id": 5,
+    "name": "Visor Cleaner Spray",
+    "description": "Anti-fog spray for helmet visors",
+    "price": 9.99,
+    "stock": 35,
+    "category": "Accessories",
+    "image": "/images/products/cleaner.webp",
+    "status": "active"
+  }
+]

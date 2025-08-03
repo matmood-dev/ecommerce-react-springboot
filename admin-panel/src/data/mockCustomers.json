@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Ahmed Ali",
+    "email": "ahmed.ali@example.com",
+    "phone": "+97333112233",
+    "joined": "2024-12-01",
+    "totalOrders": 3,
+    "totalSpent": 220.98,
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "name": "Fatima Salman",
+    "email": "fatima.salman@example.com",
+    "phone": "+97336224455",
+    "joined": "2025-01-15",
+    "totalOrders": 2,
+    "totalSpent": 119.98,
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "name": "Mohammed Hasan",
+    "email": "mohammed.hasan@example.com",
+    "phone": "+97339998877",
+    "joined": "2025-03-02",
+    "totalOrders": 1,
+    "totalSpent": 25.00,
+    "status": "inactive"
+  },
+  {
+    "id": 4,
+    "name": "Zahra Yusuf",
+    "email": "zahra.yusuf@example.com",
+    "phone": "+97335001122",
+    "joined": "2025-04-10",
+    "totalOrders": 1,
+    "totalSpent": 89.00,
+    "status": "active"
+  }
+]

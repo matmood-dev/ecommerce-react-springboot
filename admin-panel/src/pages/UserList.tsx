@@ -1,12 +1,28 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { getAllUsers, deleteUser } from "../api/userApi";
 import styled from "styled-components";
 
+import NoData from "../components/NoData";
+import RocketLoader from "../components/RocketLoader";
+
 export default function UserList() {
   const [users, setUsers] = useState([]);
+  const [hasError, setHasError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllUsers().then((res) => setUsers(res.data));
+    getAllUsers()
+      .then((res) => {
+        setUsers(res.data);
+        setHasError(res.data.length === 0);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch users:", err);
+        setHasError(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const handleDelete = (id: number) => {
@@ -19,61 +35,68 @@ export default function UserList() {
     <Wrapper>
       <Title>Users</Title>
 
-      <TableWrapper>
-        <Table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Username</th>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+      {loading ? (
+        <RocketLoader />
+      ) : hasError ? (
+        <NoData />
+      ) : (
+        <>
+          <TableWrapper>
+            <Table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user: any) => (
+                  <tr key={user.id}>
+                    <td>{user.id}</td>
+                    <td>{user.username}</td>
+                    <td>
+                      {user.firstName} {user.lastName}
+                    </td>
+                    <td>{user.email}</td>
+                    <td>
+                      <DeleteBtn onClick={() => handleDelete(user.id)}>
+                        Delete
+                      </DeleteBtn>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </TableWrapper>
 
-          <tbody>
+          <CardGrid>
             {users.map((user: any) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.username}</td>
-                <td>
-                  {user.firstName} {user.lastName}
-                </td>
-                <td>{user.email}</td>
-                <td>
+              <Card key={user.id}>
+                <Info>
+                  <Row>
+                    <Label>ID:</Label> #{user.id}
+                  </Row>
+                  <Row>
+                    <Label>Username:</Label> {user.username}
+                  </Row>
+                  <Row>
+                    <Label>Full Name:</Label> {user.firstName} {user.lastName}
+                  </Row>
+                  <Row>
+                    <Label>Email:</Label> {user.email}
+                  </Row>
                   <DeleteBtn onClick={() => handleDelete(user.id)}>
                     Delete
                   </DeleteBtn>
-                </td>
-              </tr>
+                </Info>
+              </Card>
             ))}
-          </tbody>
-        </Table>
-      </TableWrapper>
-
-      <CardGrid>
-        {users.map((user: any) => (
-          <Card key={user.id}>
-            <Info>
-              <Row>
-                <Label>ID:</Label> #{user.id}
-              </Row>
-              <Row>
-                <Label>Username:</Label> {user.username}
-              </Row>
-              <Row>
-                <Label>Full Name:</Label> {user.firstName} {user.lastName}
-              </Row>
-              <Row>
-                <Label>Email:</Label> {user.email}
-              </Row>
-              <DeleteBtn onClick={() => handleDelete(user.id)}>
-                Delete
-              </DeleteBtn>
-            </Info>
-          </Card>
-        ))}
-      </CardGrid>
+          </CardGrid>
+        </>
+      )}
     </Wrapper>
   );
 }

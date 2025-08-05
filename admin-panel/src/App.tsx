@@ -11,6 +11,7 @@ import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import Customers from "./pages/Customers";
 import Settings from "./pages/Settings";
+import UserList from "./pages/UserList"; // Assuming you have a Users page
 
 function App() {
   const [isDark, setIsDark] = useState(() => {
@@ -49,6 +50,7 @@ function App() {
             <Route path="orders" element={<Orders />} />
             <Route path="customers" element={<Customers />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="users" element={<UserList />} />
           </Route>
         </Routes>
       </Router>

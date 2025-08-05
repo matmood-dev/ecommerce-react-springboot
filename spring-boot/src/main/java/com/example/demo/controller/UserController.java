@@ -1,4 +1,3 @@
-// controller/UserController.java
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
@@ -35,8 +34,11 @@ public class UserController {
     public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
-            user.setName(userDetails.getName());
+            user.setFirstName(userDetails.getFirstName());
+            user.setLastName(userDetails.getLastName());
+            user.setUsername(userDetails.getUsername());
             user.setEmail(userDetails.getEmail());
+            user.setPassword(userDetails.getPassword());
             return userRepository.save(user);
         }
         return null;

@@ -13,6 +13,7 @@ const menuItems = [
   { label: "Orders", path: "/orders", icon: <Truck size={16} /> },
   { label: "Customers", path: "/customers", icon: <Users size={16} /> },
   { label: "Settings", path: "/settings", icon: <Settings size={16} /> },
+  { label: "Users", path: "/users", icon: <Settings size={16} /> },
 ];
 
 export default function AdminSidebar({ isOpen, onClose }: Props) {

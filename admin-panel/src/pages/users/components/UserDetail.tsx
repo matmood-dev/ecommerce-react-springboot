@@ -10,6 +10,7 @@ export default function UserDetail() {
   const [user, setUser] = useState<User | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState<User | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -27,10 +28,18 @@ export default function UserDetail() {
 
   const handleSave = () => {
     if (id && formData) {
-      updateUser(Number(id), formData).then(() => {
+      const form = new FormData();
+      form.append(
+        "user",
+        new Blob([JSON.stringify(formData)], { type: "application/json" })
+      );
+      if (file) form.append("file", file);
+
+      updateUser(Number(id), form).then(() => {
         alert("User updated");
         setUser(formData);
         setEditMode(false);
+        setFile(null);
       });
     }
   };
@@ -108,6 +117,17 @@ export default function UserDetail() {
           )}
         </Field>
 
+        {editMode && (
+          <Field>
+            <Label>New Profile Photo:</Label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+            />
+          </Field>
+        )}
+
         <ButtonGroup>
           {editMode ? (
             <>
@@ -143,8 +163,8 @@ const Card = styled.div`
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 12px;
   width: 100%;
-  max-width: 800px; /* increased from 600px */
-  min-width: 500px; /* optional: ensures decent width even on large screens */
+  max-width: 800px;
+  min-width: 500px;
   box-shadow: ${({ theme }) => theme.shadow};
 `;
 

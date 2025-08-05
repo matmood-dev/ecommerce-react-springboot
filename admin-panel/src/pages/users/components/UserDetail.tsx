@@ -33,14 +33,21 @@ export default function UserDetail() {
         "user",
         new Blob([JSON.stringify(formData)], { type: "application/json" })
       );
-      if (file) form.append("file", file);
+      if (file) {
+        form.append("file", file);
+      }
 
-      updateUser(Number(id), form).then(() => {
-        alert("User updated");
-        setUser(formData);
-        setEditMode(false);
-        setFile(null);
-      });
+      updateUser(Number(id), form)
+        .then(() => {
+          alert("User updated");
+          setUser(formData); 
+          setEditMode(false);
+          setFile(null); 
+        })
+        .catch((err) => {
+          console.error("Update failed:", err);
+          alert("Update failed");
+        });
     }
   };
 

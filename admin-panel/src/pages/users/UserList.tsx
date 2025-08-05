@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { getAllUsers } from "../../api/userApi";
 import styled from "styled-components";
+import type { User } from "../../types";
 
-import NoData from "../../components/NoData";
+import EmptyComponent from "../../components/EmptyComponent";
 import RocketLoader from "../../components/RocketLoader";
 
 export default function UserList() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -25,6 +28,12 @@ export default function UserList() {
       });
   }, []);
 
+  const navigate = useNavigate();
+
+  const handleUserClick = (id: number) => {
+    navigate(`/users/${id}`);
+  };
+
   return (
     <Wrapper>
       <Title>Users</Title>
@@ -32,7 +41,7 @@ export default function UserList() {
       {loading ? (
         <RocketLoader />
       ) : hasError ? (
-        <NoData />
+        <EmptyComponent />
       ) : (
         <>
           <TableWrapper>
@@ -46,8 +55,12 @@ export default function UserList() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user: any) => (
-                  <tr key={user.id}>
+                {users.map((user) => (
+                  <tr
+                    key={user.id}
+                    onClick={() => handleUserClick(user.id)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <td>{user.id}</td>
                     <td>{user.username}</td>
                     <td>
@@ -61,8 +74,8 @@ export default function UserList() {
           </TableWrapper>
 
           <CardGrid>
-            {users.map((user: any) => (
-              <Card key={user.id}>
+            {users.map((user) => (
+              <Card key={user.id} onClick={() => handleUserClick(user.id)}>
                 <Info>
                   <Row>
                     <Label>ID:</Label> #{user.id}
@@ -85,6 +98,7 @@ export default function UserList() {
     </Wrapper>
   );
 }
+
 
 const Wrapper = styled.div`
   padding: 2rem;
@@ -135,6 +149,12 @@ const Card = styled.div`
   border: 1px solid ${({ theme }) => theme.border};
   border-radius: 10px;
   padding: 1rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: ${({ theme }) => theme.shadow};
+  }
 `;
 
 const Info = styled.div`

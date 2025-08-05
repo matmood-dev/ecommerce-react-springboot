@@ -4,11 +4,14 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
     private final UserRepository userRepository;
 
     public UserController(UserRepository userRepository) {
@@ -21,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         return userRepository.save(user);
     }
 
@@ -31,7 +34,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+    public User updateUser(@PathVariable Long id, @Valid @RequestBody User userDetails) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
             user.setFirstName(userDetails.getFirstName());

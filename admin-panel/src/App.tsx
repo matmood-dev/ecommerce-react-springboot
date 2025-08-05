@@ -11,7 +11,7 @@ import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import Customers from "./pages/Customers";
 import Settings from "./pages/Settings";
-import UserList from "./pages/UserList"; // Assuming you have a Users page
+import UserList from "./pages/users/UserList";
 
 function App() {
   const [isDark, setIsDark] = useState(() => {

@@ -1,14 +1,9 @@
 import styled from "styled-components";
 
-import RocketLoader from "../components/RocketLoader";
-
 export default function Dashboard() {
   return (
     <Wrapper>
       <Title>Dashboard</Title>
-      <RocketLoader />
-      
-      {/* Example statistics cards */}
       <Grid>
         <Card>
           <Label>Total Orders</Label>

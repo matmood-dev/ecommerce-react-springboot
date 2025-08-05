@@ -1,9 +1,9 @@
-import { use, useEffect, useState } from "react";
-import { getAllUsers, deleteUser } from "../api/userApi";
+import { useEffect, useState } from "react";
+import { getAllUsers } from "../../api/userApi";
 import styled from "styled-components";
 
-import NoData from "../components/NoData";
-import RocketLoader from "../components/RocketLoader";
+import NoData from "../../components/NoData";
+import RocketLoader from "../../components/RocketLoader";
 
 export default function UserList() {
   const [users, setUsers] = useState([]);
@@ -25,12 +25,6 @@ export default function UserList() {
       });
   }, []);
 
-  const handleDelete = (id: number) => {
-    deleteUser(id).then(() => {
-      setUsers((prev) => prev.filter((user: any) => user.id !== id));
-    });
-  };
-
   return (
     <Wrapper>
       <Title>Users</Title>
@@ -49,7 +43,6 @@ export default function UserList() {
                   <th>Username</th>
                   <th>Full Name</th>
                   <th>Email</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -61,11 +54,6 @@ export default function UserList() {
                       {user.firstName} {user.lastName}
                     </td>
                     <td>{user.email}</td>
-                    <td>
-                      <DeleteBtn onClick={() => handleDelete(user.id)}>
-                        Delete
-                      </DeleteBtn>
-                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -88,9 +76,6 @@ export default function UserList() {
                   <Row>
                     <Label>Email:</Label> {user.email}
                   </Row>
-                  <DeleteBtn onClick={() => handleDelete(user.id)}>
-                    Delete
-                  </DeleteBtn>
                 </Info>
               </Card>
             ))}
@@ -132,21 +117,6 @@ const Table = styled.table`
   th {
     background: ${({ theme }) => theme.card};
     font-weight: 600;
-  }
-`;
-
-const DeleteBtn = styled.button`
-  background-color: #ef4444;
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: 0.2s;
-
-  &:hover {
-    background-color: #dc2626;
   }
 `;
 

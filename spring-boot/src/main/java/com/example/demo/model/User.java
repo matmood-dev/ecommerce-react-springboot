@@ -16,6 +16,7 @@ public class User {
     private String firstName;
     private String lastName;
 
+    @Column(unique = true, nullable = false)
     @NotBlank(message = "Username is required")
     @Pattern(regexp = "^[^\\s]+$", message = "Username must not contain spaces")
     private String username;
@@ -26,6 +27,9 @@ public class User {
 
     @NotBlank(message = "Password is required")
     private String password;
+
+    @Column(nullable = true)
+    private String profilePhoto;
 
     public User() {}
 
@@ -54,6 +58,10 @@ public class User {
         return password;
     }
 
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
     // Setters
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -73,5 +81,9 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 }

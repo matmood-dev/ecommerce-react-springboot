@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { MdSettings, MdLogout, MdDarkMode, MdLightMode } from "react-icons/md";
 
 type Props = {
   isDark: boolean;
@@ -60,7 +61,7 @@ export default function AdminTopbar({
           title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
           onClick={toggleTheme}
         >
-          {isDark ? "☀️" : "🌙"}
+          {isDark ? <MdLightMode /> : <MdDarkMode />}
         </ThemeToggle>
 
         <AvatarWrapper>
@@ -73,9 +74,13 @@ export default function AdminTopbar({
           {showDropdown && (
             <Dropdown>
               <DropdownItem onClick={() => navigate("/settings")}>
-                ⚙️ Settings
+                <MdSettings style={{ marginRight: "8px" }} />
+                Settings
               </DropdownItem>
-              <DropdownItem onClick={handleLogout}>⎋ Logout</DropdownItem>
+              <DropdownItem onClick={handleLogout}>
+                <MdLogout style={{ marginRight: "8px" }} />
+                Logout
+              </DropdownItem>
             </Dropdown>
           )}
         </AvatarWrapper>
@@ -190,8 +195,15 @@ const DropdownItem = styled.div`
   cursor: pointer;
   color: ${({ theme }) => theme.text};
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
 
   &:hover {
     background: ${({ theme }) => theme.primary + "15"};
   }
+
+  svg {
+    font-size: 18px;
+  }
 `;
+

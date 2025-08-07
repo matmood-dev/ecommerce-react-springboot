@@ -10,7 +10,9 @@ import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import Customers from "./pages/Customers";
-import Settings from "./pages/Settings";
+
+import Settings from "./pages/settings/Settings";
+import EditProfile from "./pages/settings/EditProfile";
 
 import UserList from "./pages/users/UserList";
 import UserDetail from "./pages/users/UserDetail";
@@ -72,7 +74,11 @@ function App() {
             <Route path="products" element={<Products />} />
             <Route path="orders" element={<Orders />} />
             <Route path="customers" element={<Customers />} />
+            
             <Route path="settings" element={<Settings />} />
+            <Route path="edit-profile" element={<EditProfile />} />
+
+            {/* User management routes */}
             <Route
               path="users"
               element={

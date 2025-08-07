@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { lightTheme, darkTheme } from "./styles/Theme";
 import GlobalStyle from "./styles/GlobalStyle";
 
-// Admin Pages
 import AdminLayout from "./components/AdminLayout";
+
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
@@ -17,8 +17,12 @@ import UserDetail from "./pages/users/UserDetail";
 import UserNew from "./pages/users/UserNew";
 import UserEdit from "./pages/users/UserEdit";
 
-// Login Page
 import LoginPage from "./pages/LoginPage";
+
+import NotFoundPage from "./pages/NotFoundPage";
+import AccessDeniedPage from "./pages/AccessDeniedPage";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [isDark, setIsDark] = useState(() => {
@@ -48,23 +52,59 @@ function App() {
       <GlobalStyle />
       <Router>
         <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/access-denied" element={<AccessDeniedPage />} />
+
+          {/* Redirect root to dashboard */}
+
+          {/* Protected routes */}
           <Route
             path="/"
-            element={<AdminLayout toggleTheme={toggleTheme} isDark={isDark} />}
+            element={
+              <ProtectedRoute>
+                <AdminLayout toggleTheme={toggleTheme} isDark={isDark} />
+              </ProtectedRoute>
+            }
           >
-            <Route path="/" element={<Dashboard />} />
+            <Route index element={<Dashboard />} />
             <Route path="products" element={<Products />} />
             <Route path="orders" element={<Orders />} />
             <Route path="customers" element={<Customers />} />
             <Route path="settings" element={<Settings />} />
-
-            <Route path="users" element={<UserList />} />
-            <Route path="users/:id" element={<UserDetail />} />
-            <Route path="users/new" element={<UserNew />} />
-            <Route path="/users/:id/edit" element={<UserEdit />} />
-
-            <Route path="login" element={<LoginPage />} />
-            <Route path="*" element={<div>404 Not Found</div>} />
+            <Route
+              path="users"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN"]}>
+                  <UserList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="users/:id"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN"]}>
+                  <UserDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="users/new"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN"]}>
+                  <UserNew />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="users/:id/edit"
+              element={
+                <ProtectedRoute allowedRoles={["ADMIN"]}>
+                  <UserEdit />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </Router>

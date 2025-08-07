@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
 export default function Dashboard() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "/login";
+    return null;
+  }
   return (
     <Wrapper>
       <Title>Dashboard</Title>

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   isDark: boolean;
@@ -11,11 +13,43 @@ export default function AdminTopbar({
   toggleTheme,
   onMenuToggle,
 }: Props) {
+  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/login";
   };
+
+  const getUserInitials = () => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) return "??";
+      const user = JSON.parse(storedUser);
+      const { firstName, lastName, username } = user;
+      if (firstName && lastName)
+        return `${firstName[0]}${lastName[0]}`.toUpperCase();
+      if (username) return username.substring(0, 2).toUpperCase();
+      return "??";
+    } catch {
+      return "??";
+    }
+  };
+
+  const getUserTooltip = () => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (!storedUser) return "Unknown User";
+      const user = JSON.parse(storedUser);
+      const { firstName, lastName, username } = user;
+      if (firstName && lastName) return `${firstName} ${lastName}`;
+      return username || "Unknown User";
+    } catch {
+      return "Unknown User";
+    }
+  };
+
   return (
     <Topbar>
       <Left>
@@ -28,10 +62,23 @@ export default function AdminTopbar({
         >
           {isDark ? "☀️" : "🌙"}
         </ThemeToggle>
-        <Avatar title="Logged in as Admin">MT</Avatar>
-        <LogoutButton onClick={handleLogout} title="Logout">
-          ⎋
-        </LogoutButton>
+
+        <AvatarWrapper>
+          <Avatar
+            onClick={() => setShowDropdown((prev) => !prev)}
+            title={getUserTooltip()}
+          >
+            {getUserInitials()}
+          </Avatar>
+          {showDropdown && (
+            <Dropdown>
+              <DropdownItem onClick={() => navigate("/settings")}>
+                ⚙️ Settings
+              </DropdownItem>
+              <DropdownItem onClick={handleLogout}>⎋ Logout</DropdownItem>
+            </Dropdown>
+          )}
+        </AvatarWrapper>
       </TopbarRight>
     </Topbar>
   );
@@ -121,21 +168,30 @@ const Left = styled.div`
   }
 `;
 
-const LogoutButton = styled.button`
-  background: ${({ theme }) => theme.danger || "#e74c3c"};
-  color: white;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+const AvatarWrapper = styled.div`
+  position: relative;
+`;
+
+const Dropdown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: ${({ theme }) => theme.card};
+  border: 1px solid ${({ theme }) => theme.border};
+  box-shadow: 0 2px 8px ${({ theme }) => theme.shadow + "15"};
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 140px;
+  z-index: 100;
+`;
+
+const DropdownItem = styled.div`
+  padding: 10px 14px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transition: all 0.2s ease;
+  color: ${({ theme }) => theme.text};
+  transition: background 0.2s;
 
   &:hover {
-    background: ${({ theme }) => theme.dangerHover || "#c0392b"};
+    background: ${({ theme }) => theme.primary + "15"};
   }
 `;

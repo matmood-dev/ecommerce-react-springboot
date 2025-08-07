@@ -5,6 +5,7 @@ import type { AxiosError } from "axios";
 import { getUserById, updateUser } from "../../api/userApi";
 import type { User } from "../../types";
 import RocketLoader from "../../components/RocketLoader";
+import BackButton from "../../components/elements/BackButton";
 
 type EditableUser = Omit<User, "id"> & { password?: string };
 
@@ -52,15 +53,13 @@ export default function UserEdit() {
     if (!formData.username.trim()) return setError("Username is required");
     if (!/\S+@\S+\.\S+/.test(formData.email)) return setError("Invalid email");
 
-    const payload = { ...formData };
-    if (!payload.password) {
-      delete payload.password; // Don't send empty password
-    }
+    const { password, ...rest } = formData;
+    const payload = password?.trim() ? { ...rest, password } : rest;
 
     setSubmitting(true);
     try {
-      await updateUser(Number(id), payload);
-      navigate("/users");
+      await updateUser(Number(id), payload as Omit<User, "id">);
+      navigate(`/users/${id}`);
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
       setError(error.response?.data?.message || "Failed to update user");
@@ -73,55 +72,58 @@ export default function UserEdit() {
   if (!id) return <div>Invalid user ID</div>;
 
   return (
-    <Wrapper>
-      <Title>Edit User</Title>
+    <>
+      <BackButton />
+      <Wrapper>
+        <Title>Edit User</Title>
 
-      <Form onSubmit={handleSubmit}>
-        <Input
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-        <Input
-          name="firstName"
-          placeholder="First Name"
-          value={formData.firstName}
-          onChange={handleChange}
-        />
-        <Input
-          name="lastName"
-          placeholder="Last Name"
-          value={formData.lastName}
-          onChange={handleChange}
-        />
-        <Input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <Input
-          type="password"
-          name="password"
-          placeholder="New Password (leave blank to keep current)"
-          value={formData.password || ""}
-          onChange={handleChange}
-        />
+        <Form onSubmit={handleSubmit}>
+          <Input
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleChange}
+          />
+          <Input
+            name="firstName"
+            placeholder="First Name"
+            value={formData.firstName}
+            onChange={handleChange}
+          />
+          <Input
+            name="lastName"
+            placeholder="Last Name"
+            value={formData.lastName}
+            onChange={handleChange}
+          />
+          <Input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <Input
+            type="password"
+            name="password"
+            placeholder="New Password (leave blank to keep current)"
+            value={formData.password || ""}
+            onChange={handleChange}
+          />
 
-        <Select name="role" value={formData.role} onChange={handleChange}>
-          <option value="USER">User</option>
-          <option value="ADMIN">Admin</option>
-        </Select>
+          <Select name="role" value={formData.role} onChange={handleChange}>
+            <option value="USER">User</option>
+            <option value="ADMIN">Admin</option>
+          </Select>
 
-        {error && <ErrorText>{error}</ErrorText>}
+          {error && <ErrorText>{error}</ErrorText>}
 
-        <Button type="submit" disabled={submitting}>
-          {submitting ? "Updating..." : "Update User"}
-        </Button>
-      </Form>
-    </Wrapper>
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Updating..." : "Update User"}
+          </Button>
+        </Form>
+      </Wrapper>
+    </>
   );
 }
 

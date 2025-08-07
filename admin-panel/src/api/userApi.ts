@@ -5,6 +5,14 @@ const API = axios.create({
   baseURL: "http://localhost:8080/api",
 });
 
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // CRUD functions
 export const getAllUsers = () => API.get("/users");
 export const getUserById = (id: number) => API.get(`/users/${id}`);

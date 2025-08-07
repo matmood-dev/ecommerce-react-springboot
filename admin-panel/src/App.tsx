@@ -17,6 +17,9 @@ import UserDetail from "./pages/users/UserDetail";
 import UserNew from "./pages/users/UserNew";
 import UserEdit from "./pages/users/UserEdit";
 
+// Login Page
+import LoginPage from "./pages/LoginPage";
+
 function App() {
   const [isDark, setIsDark] = useState(() => {
     return localStorage.getItem("theme") === "dark";
@@ -59,6 +62,9 @@ function App() {
             <Route path="users/:id" element={<UserDetail />} />
             <Route path="users/new" element={<UserNew />} />
             <Route path="/users/:id/edit" element={<UserEdit />} />
+
+            <Route path="login" element={<LoginPage />} />
+            <Route path="*" element={<div>404 Not Found</div>} />
           </Route>
         </Routes>
       </Router>

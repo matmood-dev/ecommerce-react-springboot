@@ -11,6 +11,11 @@ export default function AdminTopbar({
   toggleTheme,
   onMenuToggle,
 }: Props) {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/login";
+  };
   return (
     <Topbar>
       <Left>
@@ -24,6 +29,9 @@ export default function AdminTopbar({
           {isDark ? "☀️" : "🌙"}
         </ThemeToggle>
         <Avatar title="Logged in as Admin">MT</Avatar>
+        <LogoutButton onClick={handleLogout} title="Logout">
+          ⎋
+        </LogoutButton>
       </TopbarRight>
     </Topbar>
   );
@@ -110,5 +118,24 @@ const Left = styled.div`
 
   @media (min-width: 769px) {
     display: none;
+  }
+`;
+
+const LogoutButton = styled.button`
+  background: ${({ theme }) => theme.danger || "#e74c3c"};
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.dangerHover || "#c0392b"};
   }
 `;

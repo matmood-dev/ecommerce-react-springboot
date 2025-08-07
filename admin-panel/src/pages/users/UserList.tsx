@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { Plus } from "lucide-react";
 
 import { getAllUsers } from "../../api/userApi";
-import styled from "styled-components";
 import type { User } from "../../types";
 
 import EmptyComponent from "../../components/EmptyComponent";
@@ -10,8 +11,10 @@ import RocketLoader from "../../components/RocketLoader";
 
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
-  const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllUsers()
@@ -20,85 +23,82 @@ export default function UserList() {
         setHasError(res.data.length === 0);
       })
       .catch((err) => {
-        console.error("Failed to fetch users:", err);
+        console.error("❌ Failed to fetch users:", err);
         setHasError(true);
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }, []);
 
-  const navigate = useNavigate();
+  const handleUserClick = (id: number) => navigate(`/users/${id}`);
 
-  const handleUserClick = (id: number) => {
-    navigate(`/users/${id}`);
-  };
+  const handleAddUser = () => navigate("/users/new");
+
+  if (loading) return <RocketLoader />;
+  if (hasError) return <EmptyComponent />;
 
   return (
     <Wrapper>
-      <Title>Users</Title>
-
-      {loading ? (
-        <RocketLoader />
-      ) : hasError ? (
-        <EmptyComponent />
-      ) : (
-        <>
-          <TableWrapper>
-            <Table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Username</th>
-                  <th>Full Name</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr
-                    key={user.id}
-                    onClick={() => handleUserClick(user.id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td>{user.id}</td>
-                    <td>{user.username}</td>
-                    <td>
-                      {user.firstName} {user.lastName}
-                    </td>
-                    <td>{user.email}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </TableWrapper>
-
-          <CardGrid>
+      <Header>
+        <Title>Users</Title>
+        <AddButton onClick={handleAddUser}>
+          <Plus size={16} style={{ marginRight: "6px" }} />
+          Add New User
+        </AddButton>
+      </Header>
+      <TableWrapper>
+        <Table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
             {users.map((user) => (
-              <Card key={user.id} onClick={() => handleUserClick(user.id)}>
-                <Info>
-                  <Row>
-                    <Label>ID:</Label> #{user.id}
-                  </Row>
-                  <Row>
-                    <Label>Username:</Label> {user.username}
-                  </Row>
-                  <Row>
-                    <Label>Full Name:</Label> {user.firstName} {user.lastName}
-                  </Row>
-                  <Row>
-                    <Label>Email:</Label> {user.email}
-                  </Row>
-                </Info>
-              </Card>
+              <TableRow key={user.id} onClick={() => handleUserClick(user.id)}>
+                <td>{user.id}</td>
+                <td>{user.username}</td>
+                <td>
+                  {`${user.firstName || ""} ${user.lastName || ""}`.trim()}
+                </td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
+              </TableRow>
             ))}
-          </CardGrid>
-        </>
-      )}
+          </tbody>
+        </Table>
+      </TableWrapper>
+
+      <CardGrid>
+        {users.map((user) => (
+          <Card key={user.id} onClick={() => handleUserClick(user.id)}>
+            <Info>
+              <Row>
+                <Label>ID:</Label> #{user.id}
+              </Row>
+              <Row>
+                <Label>Username:</Label> {user.username}
+              </Row>
+              <Row>
+                <Label>Full Name:</Label>{" "}
+                {`${user.firstName || ""} ${user.lastName || ""}`.trim()}
+              </Row>
+              <Row>
+                <Label>Email:</Label> {user.email}
+              </Row>
+              <Row>
+                <Label>Role:</Label> {user.role}
+              </Row>
+            </Info>
+          </Card>
+        ))}
+      </CardGrid>
     </Wrapper>
   );
 }
-
 
 const Wrapper = styled.div`
   padding: 2rem;
@@ -108,6 +108,31 @@ const Title = styled.h2`
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+`;
+
+const AddButton = styled.button`
+  background-color: ${({ theme }) => theme.accent};
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
 `;
 
 const TableWrapper = styled.div`
@@ -131,6 +156,15 @@ const Table = styled.table`
   th {
     background: ${({ theme }) => theme.card};
     font-weight: 600;
+  }
+`;
+
+const TableRow = styled.tr`
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: ${({ theme }) => theme.hover};
   }
 `;
 

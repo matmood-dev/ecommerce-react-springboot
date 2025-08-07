@@ -5,4 +5,6 @@ export interface User {
   firstName?: string;
   lastName?: string;
   email: string;
+  password: string;
+  role: "ADMIN" | "USER"; // Assuming roles are either ADMIN or USER
 }

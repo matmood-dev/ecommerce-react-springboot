@@ -8,6 +8,7 @@ export const lightTheme = {
   card: '#f7f7f7',             // slightly darker card
   border: '#d4d4d4',           // soft border
   shadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
+  hover: '#e2e2e2',
 };
 
 export const darkTheme = {
@@ -20,4 +21,5 @@ export const darkTheme = {
   card: '#1c1c1c',             // lighter than background
   border: '#333333',           // subtle separator
   shadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
+  hover: '#1f1f1f',
 };

@@ -11,5 +11,6 @@ declare module 'styled-components' {
     card: string;
     border: string;
     shadow: string;
+    hover: string;
   }
 }

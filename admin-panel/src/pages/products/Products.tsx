@@ -1,12 +1,29 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
+
 import { fetchProducts, type Page, type Product } from "../../api/productApi";
+import { createProduct, type ProductCreate } from "../../api/productApi";
 
 export default function Products() {
   const [data, setData] = useState<Page<Product> | null>(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  // create modal state
+  const [createOpen, setCreateOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [createErr, setCreateErr] = useState<string | null>(null);
+  const [createForm, setCreateForm] = useState<ProductCreate>({
+    sku: "",
+    name: "",
+    description: "",
+    category: "",
+    price: 0,
+    stock: 0,
+    imageUrls: [],
+  });
 
   // controls
   const [q, setQ] = useState("");
@@ -48,10 +65,67 @@ export default function Products() {
 
   const total = data?.totalElements ?? 0;
 
+  const submitCreate: React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
+    // basic validation
+    if (!createForm.sku.trim()) return setCreateErr("SKU is required.");
+    if (!createForm.name.trim()) return setCreateErr("Name is required.");
+    if (
+      createForm.price == null ||
+      isNaN(Number(createForm.price)) ||
+      Number(createForm.price) < 0
+    ) {
+      return setCreateErr("Price must be a number ≥ 0.");
+    }
+    if (
+      createForm.stock == null ||
+      isNaN(Number(createForm.stock)) ||
+      Number(createForm.stock) < 0
+    ) {
+      return setCreateErr("Stock must be an integer ≥ 0.");
+    }
+
+    try {
+      setCreating(true);
+      await createProduct({
+        ...createForm,
+        price: Number(createForm.price),
+        stock: Number(createForm.stock),
+      });
+
+      // close modal and refresh list (manual refresh so you don't rely on deps)
+      setCreateOpen(false);
+      setCreateErr(null);
+      setLoading(true);
+      const refreshed = await fetchProducts({ q, category, page, size, sort });
+      setData(refreshed);
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? err.response?.data?.error || err.message
+        : err instanceof Error
+        ? err.message
+        : "Failed to create product.";
+      setCreateErr(msg);
+    } finally {
+      setCreating(false);
+      setLoading(false);
+    }
+  };
+
   return (
     <Wrapper>
       <Header>
         <Title>Products</Title>
+        <Button
+          onClick={() => {
+            setCreateErr(null);
+            setCreateOpen(true);
+          }}
+        >
+          + Add Product
+        </Button>
+
         <Actions>
           <Search
             value={q}
@@ -231,6 +305,131 @@ export default function Products() {
           </Button>
         </Pager>
       </PaginationBar>
+      {createOpen && (
+        <ModalOverlay onClick={() => !creating && setCreateOpen(false)}>
+          <Modal onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>Add Product</ModalTitle>
+            {createErr && <ErrorText>{createErr}</ErrorText>}
+            <form onSubmit={submitCreate}>
+              <FormGrid>
+                <Field>
+                  <FLabel>SKU</FLabel>
+                  <Input
+                    value={createForm.sku}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        sku: e.currentTarget.value,
+                      })
+                    }
+                    required
+                  />
+                </Field>
+                <Field>
+                  <FLabel>Name</FLabel>
+                  <Input
+                    value={createForm.name}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        name: e.currentTarget.value,
+                      })
+                    }
+                    required
+                  />
+                </Field>
+                <Field>
+                  <FLabel>Category</FLabel>
+                  <Input
+                    value={createForm.category ?? ""}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        category: e.currentTarget.value,
+                      })
+                    }
+                  />
+                </Field>
+                <Field>
+                  <FLabel>Price (BHD)</FLabel>
+                  <Input
+                    type="number"
+                    step="0.001"
+                    min={0}
+                    value={createForm.price}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        price: Number(e.currentTarget.value),
+                      })
+                    }
+                    required
+                  />
+                </Field>
+                <Field>
+                  <FLabel>Stock</FLabel>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={createForm.stock}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        stock: Number(e.currentTarget.value),
+                      })
+                    }
+                    required
+                  />
+                </Field>
+                <Field $colSpan={2}>
+                  <FLabel>Description</FLabel>
+                  <Textarea
+                    rows={4}
+                    value={createForm.description ?? ""}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        description: e.currentTarget.value,
+                      })
+                    }
+                  />
+                </Field>
+                <Field $colSpan={2}>
+                  <FLabel>Image URLs (one per line)</FLabel>
+                  <Textarea
+                    rows={4}
+                    value={(createForm.imageUrls ?? []).join("\n")}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        imageUrls: e.currentTarget.value
+                          .split("\n")
+                          .map((s) => s.trim())
+                          .filter(Boolean),
+                      })
+                    }
+                    placeholder={`https://.../image1.jpg
+https://.../image2.jpg`}
+                  />
+                </Field>
+              </FormGrid>
+
+              <ModalActions>
+                <GhostBtn
+                  type="button"
+                  disabled={creating}
+                  onClick={() => setCreateOpen(false)}
+                >
+                  Cancel
+                </GhostBtn>
+                <PrimaryBtn type="submit" disabled={creating}>
+                  {creating ? "Creating..." : "Create"}
+                </PrimaryBtn>
+              </ModalActions>
+            </form>
+          </Modal>
+        </ModalOverlay>
+      )}
     </Wrapper>
   );
 }
@@ -461,5 +660,107 @@ const NameLink = styled(Link)`
   text-decoration: none;
   &:hover {
     text-decoration: underline;
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 50;
+`;
+
+const Modal = styled.div`
+  background: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 12px;
+  width: min(720px, 100%);
+  padding: 1rem;
+  box-shadow: ${({ theme }) => theme.shadow};
+`;
+
+const ModalTitle = styled.h3`
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+`;
+
+const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Field = styled.label<{ $colSpan?: number }>`
+  display: block;
+  grid-column: span ${({ $colSpan }) => $colSpan ?? 1};
+`;
+
+const FLabel = styled.div`
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-bottom: 0.35rem;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid ${({ theme }) => theme.border};
+  background: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.text};
+  border-radius: 8px;
+  outline: none;
+`;
+
+const Textarea = styled.textarea`
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid ${({ theme }) => theme.border};
+  background: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.text};
+  border-radius: 8px;
+  outline: none;
+  resize: vertical;
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+`;
+
+const PrimaryBtn = styled.button`
+  padding: 0.5rem 0.9rem;
+  background: ${({ theme }) => theme.primary};
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+const GhostBtn = styled.button`
+  padding: 0.5rem 0.9rem;
+  background: transparent;
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 `;

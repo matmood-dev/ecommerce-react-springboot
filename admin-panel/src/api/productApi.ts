@@ -66,3 +66,19 @@ export async function updateProduct(id: number, data: ProductUpdate) {
 export async function deleteProduct(id: number) {
   await API.delete(`/api/products/${id}`);
 }
+
+
+export type ProductCreate = {
+  sku: string;
+  name: string;
+  description?: string;
+  category?: string;
+  price: number;
+  stock: number;
+  imageUrls: string[];
+};
+
+export async function createProduct(data: ProductCreate) {
+  const res = await API.post<Product>("/api/products", data);
+  return res.data;
+}

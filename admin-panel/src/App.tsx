@@ -7,7 +7,10 @@ import GlobalStyle from "./styles/GlobalStyle";
 import AdminLayout from "./components/AdminLayout";
 
 import Dashboard from "./pages/Dashboard";
-import Products from "./pages/Products";
+
+import Products from "./pages/products/Products";
+import ProductDetail from "./pages/products/ProductDetail";
+
 import Orders from "./pages/Orders";
 import Customers from "./pages/Customers";
 
@@ -71,7 +74,11 @@ function App() {
             }
           >
             <Route index element={<Dashboard />} />
+
             <Route path="products" element={<Products />} />
+            <Route path="products/:id" element={<ProductDetail />} />
+
+
             <Route path="orders" element={<Orders />} />
             <Route path="customers" element={<Customers />} />
             

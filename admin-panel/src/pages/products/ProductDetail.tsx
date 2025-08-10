@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
 import {
   fetchProductById,
@@ -8,6 +9,25 @@ import {
   type Product,
   type ProductUpdate,
 } from "../../api/productApi";
+
+/* utils (outside component so they don't recreate each render) */
+function formatBHD(value: number) {
+  try {
+    return new Intl.NumberFormat("en-BH", {
+      style: "currency",
+      currency: "BHD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 3,
+    }).format(value);
+  } catch {
+    return `${value?.toFixed?.(2) ?? value} BHD`;
+  }
+}
+function formatDate(iso?: string) {
+  if (!iso) return "-";
+  const d = new Date(iso);
+  return d.toLocaleDateString();
+}
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -42,7 +62,12 @@ export default function ProductDetail() {
       })
       .catch((e) => {
         if (ignore) return;
-        setErr(e?.response?.data?.error || e.message);
+        const msg = axios.isAxiosError(e)
+          ? e.response?.data?.error || e.message
+          : e instanceof Error
+          ? e.message
+          : "Failed to load product.";
+        setErr(msg);
       })
       .finally(() => !ignore && setLoading(false));
 
@@ -71,7 +96,7 @@ export default function ProductDetail() {
     setEditOpen(true);
   };
 
-  const submitEdit = async (e: React.FormEvent) => {
+  const submitEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!product || !form) return;
 
@@ -92,8 +117,13 @@ export default function ProductDetail() {
       });
       setProduct(updated);
       setEditOpen(false);
-    } catch (e: any) {
-      setFormErr(e?.response?.data?.error || "Failed to update product.");
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? err.response?.data?.error || err.message
+        : err instanceof Error
+        ? err.message
+        : "Failed to update product.";
+      setFormErr(msg);
     } finally {
       setSaving(false);
     }
@@ -105,14 +135,20 @@ export default function ProductDetail() {
       setDeleting(true);
       await deleteProduct(product.id);
       navigate("/products");
-    } catch (e: any) {
-      setErr(e?.response?.data?.error || "Failed to delete product.");
+    } catch (err: unknown) {
+      const msg = axios.isAxiosError(err)
+        ? err.response?.data?.error || err.message
+        : err instanceof Error
+        ? err.message
+        : "Failed to delete product.";
+      setErr(msg);
     } finally {
       setDeleting(false);
       setConfirmOpen(false);
     }
   };
 
+  /* render */
   if (loading) {
     return (
       <Wrapper>
@@ -199,9 +235,7 @@ export default function ProductDetail() {
           <NameRow>
             <h2>{product.name}</h2>
             <StockBadge $stock={product.stock}>
-              {product.stock === 0
-                ? "Out of stock"
-                : `${product.stock} in stock`}
+              {product.stock === 0 ? "Out of stock" : `${product.stock} in stock`}
             </StockBadge>
           </NameRow>
 
@@ -248,9 +282,7 @@ export default function ProductDetail() {
                   <FLabel>SKU</FLabel>
                   <Input
                     value={form.sku}
-                    onChange={(e) =>
-                      setForm({ ...form, sku: e.currentTarget.value })
-                    }
+                    onChange={(e) => setForm({ ...form, sku: e.currentTarget.value })}
                     required
                   />
                 </Field>
@@ -258,9 +290,7 @@ export default function ProductDetail() {
                   <FLabel>Name</FLabel>
                   <Input
                     value={form.name}
-                    onChange={(e) =>
-                      setForm({ ...form, name: e.currentTarget.value })
-                    }
+                    onChange={(e) => setForm({ ...form, name: e.currentTarget.value })}
                     required
                   />
                 </Field>
@@ -268,9 +298,7 @@ export default function ProductDetail() {
                   <FLabel>Category</FLabel>
                   <Input
                     value={form.category ?? ""}
-                    onChange={(e) =>
-                      setForm({ ...form, category: e.currentTarget.value })
-                    }
+                    onChange={(e) => setForm({ ...form, category: e.currentTarget.value })}
                   />
                 </Field>
                 <Field>
@@ -304,10 +332,7 @@ export default function ProductDetail() {
                     rows={4}
                     value={form.description ?? ""}
                     onChange={(e) =>
-                      setForm({
-                        ...form,
-                        description: e.currentTarget.value,
-                      })
+                      setForm({ ...form, description: e.currentTarget.value })
                     }
                   />
                 </Field>
@@ -325,8 +350,8 @@ export default function ProductDetail() {
                           .filter(Boolean),
                       })
                     }
-                    placeholder="https://.../image1.jpg
-https://.../image2.jpg"
+                    placeholder={`https://.../image1.jpg
+https://.../image2.jpg`}
                   />
                 </Field>
               </FormGrid>
@@ -350,8 +375,7 @@ https://.../image2.jpg"
           <Modal onClick={(e) => e.stopPropagation()}>
             <ModalTitle>Delete product</ModalTitle>
             <p>
-              Are you sure you want to delete <strong>{product.name}</strong>?
-              This action cannot be undone.
+              Are you sure you want to delete <strong>{product.name}</strong>? This action cannot be undone.
             </p>
             <ModalActions>
               <GhostBtn type="button" disabled={deleting} onClick={() => setConfirmOpen(false)}>
@@ -368,26 +392,7 @@ https://.../image2.jpg"
   );
 }
 
-/* utils */
-function formatBHD(value: number) {
-  try {
-    return new Intl.NumberFormat("en-BH", {
-      style: "currency",
-      currency: "BHD",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 3,
-    }).format(value);
-  } catch {
-    return `${value?.toFixed?.(2) ?? value} BHD`;
-  }
-}
-function formatDate(iso?: string) {
-  if (!iso) return "-";
-  const d = new Date(iso);
-  return d.toLocaleDateString();
-}
-
-/* styles */
+/* === styles (unchanged from your version) === */
 const Wrapper = styled.div`
   padding: 2rem;
 `;

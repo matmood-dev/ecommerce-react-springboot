@@ -47,3 +47,22 @@ export async function fetchProducts(params: {
   const res = await API.get<Page<Product>>("/api/products", { params });
   return res.data;
 }
+
+export type ProductUpdate = {
+  sku: string;
+  name: string;
+  description?: string;
+  category?: string;
+  price: number;
+  stock: number;
+  imageUrls: string[];
+};
+
+export async function updateProduct(id: number, data: ProductUpdate) {
+  const res = await API.put<Product>(`/api/products/${id}`, data);
+  return res.data;
+}
+
+export async function deleteProduct(id: number) {
+  await API.delete(`/api/products/${id}`);
+}

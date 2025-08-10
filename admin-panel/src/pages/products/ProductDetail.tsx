@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import styled from "styled-components";
-import { fetchProductById, type Product } from "../../api/productApi";
+import {
+  fetchProductById,
+  updateProduct,
+  deleteProduct,
+  type Product,
+  type ProductUpdate,
+} from "../../api/productApi";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +17,16 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [activeIdx, setActiveIdx] = useState(0);
+
+  // edit modal state
+  const [editOpen, setEditOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [formErr, setFormErr] = useState<string | null>(null);
+  const [form, setForm] = useState<ProductUpdate | null>(null);
+
+  // delete confirm
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -30,10 +46,72 @@ export default function ProductDetail() {
       })
       .finally(() => !ignore && setLoading(false));
 
-    return () => { ignore = true; };
+    return () => {
+      ignore = true;
+    };
   }, [id]);
 
-  const mainImage = useMemo(() => product?.imageUrls?.[activeIdx] ?? "", [product, activeIdx]);
+  const mainImage = useMemo(
+    () => product?.imageUrls?.[activeIdx] ?? "",
+    [product, activeIdx]
+  );
+
+  const openEdit = () => {
+    if (!product) return;
+    setForm({
+      sku: product.sku,
+      name: product.name,
+      description: product.description,
+      category: product.category,
+      price: product.price,
+      stock: product.stock,
+      imageUrls: product.imageUrls ?? [],
+    });
+    setFormErr(null);
+    setEditOpen(true);
+  };
+
+  const submitEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!product || !form) return;
+
+    // basic validation
+    if (!form.sku.trim()) return setFormErr("SKU is required.");
+    if (!form.name.trim()) return setFormErr("Name is required.");
+    if (form.price == null || isNaN(Number(form.price)) || Number(form.price) < 0)
+      return setFormErr("Price must be a number ≥ 0.");
+    if (form.stock == null || isNaN(Number(form.stock)) || Number(form.stock) < 0)
+      return setFormErr("Stock must be an integer ≥ 0.");
+
+    try {
+      setSaving(true);
+      const updated = await updateProduct(product.id, {
+        ...form,
+        price: Number(form.price),
+        stock: Number(form.stock),
+      });
+      setProduct(updated);
+      setEditOpen(false);
+    } catch (e: any) {
+      setFormErr(e?.response?.data?.error || "Failed to update product.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!product) return;
+    try {
+      setDeleting(true);
+      await deleteProduct(product.id);
+      navigate("/products");
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || "Failed to delete product.");
+    } finally {
+      setDeleting(false);
+      setConfirmOpen(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -74,12 +152,15 @@ export default function ProductDetail() {
   return (
     <Wrapper>
       <Header>
-        <Back as={Link} to="/products">← Products</Back>
+        <Back as={Link} to="/products">
+          ← Products
+        </Back>
         <Title>{product.name}</Title>
         <HeaderActions>
-          {/* You can wire Edit/Delete later */}
-          {/* <ActionBtn>Edit</ActionBtn>
-          <ActionBtn danger>Delete</ActionBtn> */}
+          <ActionBtn onClick={openEdit}>Edit</ActionBtn>
+          <ActionBtn danger onClick={() => setConfirmOpen(true)}>
+            Delete
+          </ActionBtn>
         </HeaderActions>
       </Header>
 
@@ -95,11 +176,21 @@ export default function ProductDetail() {
           </MainImage>
 
           <ThumbRow>
-            {(product.imageUrls?.length ? product.imageUrls : [undefined]).map((url, i) => (
-              <Thumb key={i} $active={i === activeIdx} onClick={() => setActiveIdx(i)}>
-                {url ? <img src={url} alt={`${product.name} ${i + 1}`} /> : <NoImg>IMG</NoImg>}
-              </Thumb>
-            ))}
+            {(product.imageUrls?.length ? product.imageUrls : [undefined]).map(
+              (url, i) => (
+                <Thumb
+                  key={i}
+                  $active={i === activeIdx}
+                  onClick={() => setActiveIdx(i)}
+                >
+                  {url ? (
+                    <img src={url} alt={`${product.name} ${i + 1}`} />
+                  ) : (
+                    <NoImg>IMG</NoImg>
+                  )}
+                </Thumb>
+              )
+            )}
           </ThumbRow>
         </Gallery>
 
@@ -108,7 +199,9 @@ export default function ProductDetail() {
           <NameRow>
             <h2>{product.name}</h2>
             <StockBadge $stock={product.stock}>
-              {product.stock === 0 ? "Out of stock" : `${product.stock} in stock`}
+              {product.stock === 0
+                ? "Out of stock"
+                : `${product.stock} in stock`}
             </StockBadge>
           </NameRow>
 
@@ -142,6 +235,135 @@ export default function ProductDetail() {
           </DetailsGrid>
         </Info>
       </Content>
+
+      {/* Edit Modal */}
+      {editOpen && form && (
+        <ModalOverlay onClick={() => !saving && setEditOpen(false)}>
+          <Modal onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>Edit Product</ModalTitle>
+            {formErr && <ErrorText>{formErr}</ErrorText>}
+            <form onSubmit={submitEdit}>
+              <FormGrid>
+                <Field>
+                  <FLabel>SKU</FLabel>
+                  <Input
+                    value={form.sku}
+                    onChange={(e) =>
+                      setForm({ ...form, sku: e.currentTarget.value })
+                    }
+                    required
+                  />
+                </Field>
+                <Field>
+                  <FLabel>Name</FLabel>
+                  <Input
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm({ ...form, name: e.currentTarget.value })
+                    }
+                    required
+                  />
+                </Field>
+                <Field>
+                  <FLabel>Category</FLabel>
+                  <Input
+                    value={form.category ?? ""}
+                    onChange={(e) =>
+                      setForm({ ...form, category: e.currentTarget.value })
+                    }
+                  />
+                </Field>
+                <Field>
+                  <FLabel>Price (BHD)</FLabel>
+                  <Input
+                    type="number"
+                    step="0.001"
+                    min={0}
+                    value={form.price}
+                    onChange={(e) =>
+                      setForm({ ...form, price: Number(e.currentTarget.value) })
+                    }
+                    required
+                  />
+                </Field>
+                <Field>
+                  <FLabel>Stock</FLabel>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={form.stock}
+                    onChange={(e) =>
+                      setForm({ ...form, stock: Number(e.currentTarget.value) })
+                    }
+                    required
+                  />
+                </Field>
+                <Field $colSpan={2}>
+                  <FLabel>Description</FLabel>
+                  <Textarea
+                    rows={4}
+                    value={form.description ?? ""}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        description: e.currentTarget.value,
+                      })
+                    }
+                  />
+                </Field>
+                <Field $colSpan={2}>
+                  <FLabel>Image URLs (one per line)</FLabel>
+                  <Textarea
+                    rows={4}
+                    value={(form.imageUrls ?? []).join("\n")}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        imageUrls: e.currentTarget.value
+                          .split("\n")
+                          .map((s) => s.trim())
+                          .filter(Boolean),
+                      })
+                    }
+                    placeholder="https://.../image1.jpg
+https://.../image2.jpg"
+                  />
+                </Field>
+              </FormGrid>
+
+              <ModalActions>
+                <GhostBtn type="button" disabled={saving} onClick={() => setEditOpen(false)}>
+                  Cancel
+                </GhostBtn>
+                <PrimaryBtn type="submit" disabled={saving}>
+                  {saving ? "Saving..." : "Save changes"}
+                </PrimaryBtn>
+              </ModalActions>
+            </form>
+          </Modal>
+        </ModalOverlay>
+      )}
+
+      {/* Delete Confirm */}
+      {confirmOpen && (
+        <ModalOverlay onClick={() => !deleting && setConfirmOpen(false)}>
+          <Modal onClick={(e) => e.stopPropagation()}>
+            <ModalTitle>Delete product</ModalTitle>
+            <p>
+              Are you sure you want to delete <strong>{product.name}</strong>?
+              This action cannot be undone.
+            </p>
+            <ModalActions>
+              <GhostBtn type="button" disabled={deleting} onClick={() => setConfirmOpen(false)}>
+                Cancel
+              </GhostBtn>
+              <DangerBtn type="button" disabled={deleting} onClick={confirmDelete}>
+                {deleting ? "Deleting..." : "Delete"}
+              </DangerBtn>
+            </ModalActions>
+          </Modal>
+        </ModalOverlay>
+      )}
     </Wrapper>
   );
 }
@@ -260,7 +482,8 @@ const Thumb = styled.button<{ $active?: boolean }>`
   height: 72px;
   border-radius: 10px;
   overflow: hidden;
-  border: 2px solid ${({ $active, theme }) => ($active ? theme.primary : theme.border)};
+  border: 2px solid
+    ${({ $active, theme }) => ($active ? theme.primary : theme.border)};
   background: ${({ theme }) => theme.card};
   display: grid;
   place-items: center;
@@ -343,7 +566,8 @@ const Label = styled.div`
 `;
 
 const Value = styled.div<{ mono?: boolean }>`
-  font-family: ${({ mono }) => (mono ? "ui-monospace, SFMono-Regular, Menlo, monospace" : "inherit")};
+  font-family: ${({ mono }) =>
+    mono ? "ui-monospace, SFMono-Regular, Menlo, monospace" : "inherit"};
   overflow-wrap: anywhere;
 `;
 
@@ -355,4 +579,105 @@ const Muted = styled.div`
 const ErrorText = styled.div`
   color: #ef4444;
   padding: 0.75rem 0;
+`;
+
+/* Modal styles */
+const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 50;
+`;
+
+const Modal = styled.div`
+  background: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 12px;
+  width: min(720px, 100%);
+  padding: 1rem;
+  box-shadow: ${({ theme }) => theme.shadow};
+`;
+
+const ModalTitle = styled.h3`
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+`;
+
+const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Field = styled.label<{ $colSpan?: number }>`
+  display: block;
+  grid-column: span ${({ $colSpan }) => $colSpan ?? 1};
+`;
+
+const FLabel = styled.div`
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-bottom: 0.35rem;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid ${({ theme }) => theme.border};
+  background: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.text};
+  border-radius: 8px;
+  outline: none;
+`;
+
+const Textarea = styled.textarea`
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid ${({ theme }) => theme.border};
+  background: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.text};
+  border-radius: 8px;
+  outline: none;
+  resize: vertical;
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+`;
+
+const PrimaryBtn = styled.button`
+  padding: 0.5rem 0.9rem;
+  background: ${({ theme }) => theme.primary};
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+`;
+
+const GhostBtn = styled.button`
+  padding: 0.5rem 0.9rem;
+  background: transparent;
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+`;
+
+const DangerBtn = styled(PrimaryBtn)`
+  background: #ef4444;
 `;

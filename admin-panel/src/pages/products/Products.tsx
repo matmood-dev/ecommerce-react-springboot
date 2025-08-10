@@ -11,9 +11,18 @@ export default function Products() {
   // controls
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("");
-  const [sort, setSort] = useState<
-    "createdAt,desc" | "price,asc" | "price,desc"
-  >("createdAt,desc");
+  const SORT_OPTIONS = ["createdAt,desc", "price,asc", "price,desc"] as const;
+  type SortOption = (typeof SORT_OPTIONS)[number];
+  const [sort, setSort] = useState<SortOption>("createdAt,desc");
+
+  function isSortOption(v: string): v is SortOption {
+    return (SORT_OPTIONS as readonly string[]).includes(v);
+  }
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const v = e.currentTarget.value;
+    if (isSortOption(v)) setSort(v);
+  };
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
 
@@ -59,7 +68,7 @@ export default function Products() {
             <option value="Jackets">Jackets</option>
             {/* add more or load dynamically */}
           </Select>
-          <Select value={sort} onChange={(e) => setSort(e.target.value as any)}>
+          <Select value={sort} onChange={handleSortChange}>
             <option value="createdAt,desc">Newest</option>
             <option value="price,asc">Price: Low → High</option>
             <option value="price,desc">Price: High → Low</option>
@@ -450,5 +459,7 @@ const PageIndicator = styled.span`
 const NameLink = styled(Link)`
   color: ${({ theme }) => theme.text};
   text-decoration: none;
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 `;
